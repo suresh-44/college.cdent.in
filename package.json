@@ -1,0 +1,32 @@
+{
+  "name": "college.cdent.in",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "csslint": "csslint public/stylesheets/**",
+    "eslint": "eslint .",
+    "pretest": "npm run csslint && npm run eslint",
+    "test": "mocha ./tests --recursive"
+  },
+  "dependencies": {
+    "compression": "^1.7.3",
+    "cookie-parser": "~1.4.3",
+    "debug": "~4.1.1",
+    "dotenv": "^8.0.0",
+    "express": "~4.16.0",
+    "express-minify": "^1.0.0",
+    "hbs": "^4.0.4",
+    "morgan": "~1.9.0",
+    "validator": "^10.11.0",
+    "http-errors": "~1.7.2",
+    "mongoose": "^5.5.7"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "csslint": "^1.0.5",
+    "eslint": "^5.16.0",
+    "eslint-config-google": "^0.12.0",
+    "mocha": "^6.1.4"
+  }
+}
