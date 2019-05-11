@@ -6,6 +6,7 @@
 const app = require("../app");
 const debug = require("debug")("college.cdent.in:server");
 const http = require("http");
+const {connectDB} = require("../database/db");
 
 /**
  * Get port from environment and store in Express.
@@ -21,8 +22,15 @@ const server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
-
-server.listen(port);
+connectDB().then(
+	() => {
+		server.listen(port);
+	},
+	(err) => {
+		debug("Error connecting to db.");
+		console.log("Error", err);
+	},
+);
 server.on("error", onError);
 server.on("listening", onListening);
 
