@@ -1,0 +1,25 @@
+language: node_js
+
+node_js:
+  - "lts/*"
+
+os:
+  - linux
+
+env:
+  - PORT=3000 NODE_ENV=development DATABASE_URL=mongodb://localhost/
+
+services:
+  - mongodb
+
+before_script:
+  - sleep 15
+
+script:
+  - npm install
+  - npm run test
+
+notifications:
+  email:
+    on_success: never
+    on_failure: change
