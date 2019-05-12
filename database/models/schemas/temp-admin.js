@@ -10,6 +10,7 @@ const tempAdmin = new mongoose.Schema({
 	email: {
 		type: String,
 		required: true,
+		unique : true,
 		trim: true,
 		validate: {
 			validator: validator.isEmail,
@@ -40,6 +41,11 @@ const tempAdmin = new mongoose.Schema({
 		required: true,
 		trim: true,
 	},
+	role : {
+		type : String,
+		required : true,
+		trim : true
+	}
 });
 
 module.exports = tempAdmin;

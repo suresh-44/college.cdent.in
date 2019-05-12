@@ -1,19 +1,30 @@
 const TempModel = require("../database/models/temp-model");
 
-const register = async (data, file) => {
+const upload = require("../utils/multer").single("file");
 
-	const tempModel = new TempModel({
-		name: data.adminName,
-		email: data.adminEmail,
-		collegeName: data.collegeName,
-		collegeAddr: data.collegeAddr,
-		collegeWebsite: data.collegeWebsite,
-		authLetterFile: file.name,
+const register = async (req, res) => {
+let tempModel;
+	upload(req, res,  err => {
+		if (err) {
+			return new Error(err);
+		}
+
+		 tempModel = new TempModel({
+			name: req.body.name,
+			email: req.body.email,
+			role: req.body.role,
+			collegeName: req.body.collegeName,
+			collegeAddr: req.body.collegeAddr,
+			collegeWebsite: req.body.collegeUrl,
+			authLetterFile: req.file.destination + req.file.filename
+		}).save();
+
+	
+
 	});
 
-	//TODO save the file in temp folder and store the name in db.
-	//TODO validate and save the details in the database: On success, do nothing & On error throw the error messages.
-
+	await tempModel
+	//TODO saving and validating but can't send error message if not validated
 };
 
 module.exports = register;

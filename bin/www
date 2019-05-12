@@ -25,6 +25,7 @@ const server = http.createServer(app);
 connectDB().then(
 	() => {
 		server.listen(port);
+		console.log(`server up at ${port}`)
 	},
 	(err) => {
 		debug("Error connecting to db.");
