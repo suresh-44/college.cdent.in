@@ -22,12 +22,12 @@ app.set("view engine", "hbs");
 
 app.use(logger("dev"));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({extended: false}));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
 
-//session setup
+// session setup
 const sessionOptions = {
   store: new FileStore({}),
   secret: process.env.SESSION_SECRET,

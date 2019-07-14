@@ -7,11 +7,12 @@ const superAdminServices = {
 	login: async (req, res) => {
 		const inputPwdHash = hash.update(req.body.password, "utf8").digest("hex");
 		if (process.env.SUPER_ADMIN_PWD === inputPwdHash) {
-			//Password is correct Login user now
+			// Password is correct Login user now
 
-			let browser = req.headers["user-agent"];
-			let userIP = req.header("x-forwarded-for") || req.connection.remoteAddress;
-			let str = browser + userIP + inputPwdHash;
+			const browser = req.headers["user-agent"];
+			const userIP = req.header("x-forwarded-for")
+				|| req.connection.remoteAddress;
+			const str = browser + userIP + inputPwdHash;
 
 			req.session.login = true;
 			req.session.superAdmin = true;
@@ -23,12 +24,15 @@ const superAdminServices = {
 		}
 	},
 	checkLogin: async (req, res) => {
-		let browser = req.headers["user-agent"];
-		let userIP = req.header("x-forwarded-for") || req.connection.remoteAddress;
-		let str = browser + userIP + process.env.SUPER_ADMIN_PWD;
-		let hash = hash.update(str, "utf8").digest("hex");
+		const browser = req.headers["user-agent"];
+		const userIP = req.header("x-forwarded-for")
+			|| req.connection.remoteAddress;
+		const str = browser + userIP + process.env.SUPER_ADMIN_PWD;
+		const hash = hash.update(str, "utf8").digest("hex");
 
-		if (!(req.session.login && req.session.superAdmin && hash === req.session.secret)) {
+		if (!(req.session.login &&
+			req.session.superAdmin &&
+			hash === req.session.secret)) {
 			res.redirect("/");
 		}
 	},

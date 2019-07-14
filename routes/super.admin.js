@@ -11,14 +11,14 @@ router.post("/", async (req, res) => {
 	try {
 		await superAdmin.login(req, res);
 	} catch (e) {
-		const errorMsg = e.message;
+		//const errorMsg = e.message;
 	}
 });
 
 router.get("/list/college", async (req, res) => {
 	try {
 		await superAdmin.checkLogin(req, res);
-		let data = await superAdmin.getCollegeData();
+		const data = await superAdmin.getCollegeData();
 		res.render("super.admin.dashboard", data);
 	} catch (e) {
 
