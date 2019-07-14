@@ -1,11 +1,18 @@
 const createError = require("http-errors");
 const express = require("express");
 const path = require("path");
+const session = require("express-session");
+const FileStore = require("session-file-store")(session);
 const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
 const logger = require("morgan");
 
-const indexRouter = require("./routes/index");
+// const fileUpload = require("express-fileupload");
 
+require("dotenv").config();
+
+const indexRouter = require("./routes/index");
+const superAdminRouter = require("./routes/super.admin");
 
 const app = express();
 
@@ -16,10 +23,38 @@ app.set("view engine", "hbs");
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(cookieParser());
+
+// session setup
+const sessionOptions = {
+	store: new FileStore({}),
+	secret: process.env.SESSION_SECRET,
+	resave: true,
+	saveUninitialized: false,
+	cookie: {secure: false},
+};
+
+
+if (process.env.NODE_ENV === "production") {
+	app.set("trust proxy", 1);
+	sessionOptions.cookie.secure = true; // for https connections
+}
+
+app.use(session(sessionOptions));
+// app.use(
+//   fileUpload({
+//     safeFileNames: true,
+//     preserveExtension: true,
+//     useTempFiles: true,
+//     tempFileDir: path.join(__dirname, "temp_upload")
+//   })
+// );
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
+app.use("/super/admin", superAdminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
