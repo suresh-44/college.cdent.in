@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <title>{{title}}</title>
+</head>
+
+<body>
+
+  {{> _navBar}}
+  <div class="container center">
+
+    <div class="card">
+      <form action="">
+        <div class="form-group" mt-4>
+          <label for="name">Name</label>
+          <input type="text" class="form-control" id="name" name="name" placeholder="Enter Your Name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" class="form-control" id="email" placeholder="Enter Your E-mail" name="email" required>
+        </div>
+        <div class="form-group">
+          <label for="role">Role</label>
+          <input type="text" class="form-control" id="role" placeholder="Enter Your Role in Your College" name="role"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="phone_no">Phone Number</label>
+          <input type="number" class="form-control" id="phone_no" placeholder="Enter Your Phone Number" name="phone_no"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="clgName">College Name</label>
+          <input type="text" class="form-control" id="clgName" placeholder="Enter Your College Name" name="clgName"
+            required>
+        </div>
+        <div class="form-group">
+          <label for="clgAddr">College Address</label>
+          <textarea type="text" class="form-control" id="clgAddr" placeholder="Enter Your College Adrress"
+            name="clgAddr" required></textarea>
+        </div>
+        <div class="form-group">
+          <label for="clgUrl">College Official Website</label>
+          <input type="clgUrl" class="form-control" id="email" placeholder="Enter Your College Official Website link"
+            name="clgUrl" required>
+        </div>
+        <div class="custom-file mb-3 mt-3">
+          <input type="file" class="custom-file-input" id="input-file" required>
+          <label class="custom-file-label" for="input-file">College Verification File</label>
+          
+
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+    </div>
+
+
+  </div>
+</body>
+
+</html>
