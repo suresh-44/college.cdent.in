@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 const TempModel = require("../database/models/temp-model");
 
 const upload = require("../utils/multer").single("file");
@@ -9,15 +11,28 @@ const register = async (req, res) => {
 			return new Error(err);
 		}
 
-		tempModel = new TempModel({
-			name: req.body.name,
-			email: req.body.email,
-			role: req.body.role,
-			collegeName: req.body.collegeName,
-			collegeAddr: req.body.collegeAddr,
-			collegeWebsite: req.body.collegeUrl,
-			authLetterFile: req.file.destination + req.file.filename,
-		}).save();
+		const secretKey = "6Lc95q0UAAAAANdq6fhXK5xddCyfyyYUE4V-L48Z";
+		const verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + secretKey + "&response=" + req.body['g-recaptcha-response'];
+	
+	
+		axios.get(verificationURL).then(body => {
+			if(!body.data.success){
+				return new Error(body.data['error-codes'])
+			}
+	
+			tempModel = new TempModel({
+				name: req.body.name,
+				email: req.body.email,
+				role: req.body.role,
+				phone_no: req.body.phone_no,
+				collegeName: req.body.clgName,
+				collegeAddr: req.body.clgAddr,
+				collegeWebsite: req.body.clgUrl,
+				authLetterFile: req.file.destination + req.file.filename,
+			}).save();
+		})
+		
+		
 	});
 
 	await tempModel;

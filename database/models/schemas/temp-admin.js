@@ -17,6 +17,11 @@ const tempAdmin = new mongoose.Schema({
 			message: "{VALUE} is not a valid email address.",
 		},
 	},
+	phone_no: {
+		type: Number,
+		required: true,
+		trim: true,
+	},
 	collegeName: {
 		type: String,
 		required: true,

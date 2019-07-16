@@ -14,8 +14,10 @@
   {{> _navBar}}
   <div class="container center">
 
-    <div class="card">
-      <form action="">
+    <div class="card card-body">
+      <h1 class="display-5 h1  mb-3 card-title">Register<hr></h1>
+      
+      <form action="/register" method="POST" enctype="multipart/form-data">
         <div class="form-group" mt-4>
           <label for="name">Name</label>
           <input type="text" class="form-control" id="name" name="name" placeholder="Enter Your Name" required>
@@ -50,12 +52,12 @@
             name="clgUrl" required>
         </div>
         <div class="custom-file mb-3 mt-3">
-          <input type="file" class="custom-file-input" id="input-file" required>
+          <input type="file" name="file" class="custom-file-input" id="input-file" required>
           <label class="custom-file-label" for="input-file">College Verification File</label>
-          
-
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+         <div class="g-recaptcha mt-3 mb-3" data-sitekey="6Lc95q0UAAAAANPS-utNhYLz88Amob6zr7QUByCW"></div>
+
+        <button type="submit" class="btn btn-success btn-lg btn-block card-link mt-3">Submit</button>
       </form>
     </div>
 
