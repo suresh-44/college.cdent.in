@@ -11,8 +11,8 @@ const register = async (req, res) => {
 			return new Error(err);
 		}
 
-		const secretKey = "6Lc95q0UAAAAANdq6fhXK5xddCyfyyYUE4V-L48Z";
-		const verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + secretKey + "&response=" + req.body['g-recaptcha-response'];
+
+		const verificationURL = "https://www.google.com/recaptcha/api/siteverify?secret=" + process.env.RECAPCTHA_SECRET + "&response=" + req.body['g-recaptcha-response'];
 	
 	
 		axios.get(verificationURL).then(body => {

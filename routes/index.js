@@ -9,7 +9,7 @@ router.get("/", function(req, res, next) {
 });
 
 router.get("/register", (req, res) => {
-	res.render("register", {title: "Register"});
+	res.render("register", {title: "Register", key : process.env.RECAPCTHA_KEY});
 });
 
 router.post("/register", async (req, res) => {
