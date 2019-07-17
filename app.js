@@ -6,6 +6,7 @@ const FileStore = require("session-file-store")(session);
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
+const hbs = require('hbs')
 
 // const fileUpload = require("express-fileupload");
 
@@ -19,6 +20,7 @@ const app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
+hbs.registerPartials(__dirname + '/views/partials');
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -30,7 +32,7 @@ app.use(cookieParser());
 // session setup
 const sessionOptions = {
 	store: new FileStore({}),
-	secret: process.env.SESSION_SECRET,
+	secret: "dfsdfsd", //process.env.SESSION_SECRET,
 	resave: true,
 	saveUninitialized: false,
 	cookie: {secure: false},

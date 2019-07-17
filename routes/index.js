@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require("express");	
 const router = express.Router();
 
 const register = require("../services/registration");
@@ -9,7 +9,7 @@ router.get("/", function(req, res, next) {
 });
 
 router.get("/register", (req, res) => {
-	res.render("register", {title: "Register"});
+	res.render("register", {title: "Register", key : process.env.RECAPCTHA_KEY});
 });
 
 router.post("/register", async (req, res) => {
@@ -22,8 +22,9 @@ router.post("/register", async (req, res) => {
 	} catch (error) {
 		rVal.message = error.message;
 		rVal.code = 402;
-	}
-	res.json(rVal);
+	}	
+
+	res.json({data : rVal})
 });
 
 router.get("");
