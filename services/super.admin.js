@@ -62,16 +62,16 @@ const superAdminServices = {
 		await TempModel.findByIdAndRemove(id);
 	},
 	acceptCollege: async (collegeID) => {
-		//GET old data
+		// GET old data
 		const data = await TempModel.find(collegeID);
 
-		//&& Generate a link to send as email
+		// && Generate a link to send as email
 		const uniqueString = utils.randomString(16);
 		const link = "https://college.cdent.co.in/" + "/account/create/" + uniqueString;
 
 		const adminModel = new AdminModel({
 			name: data.name,
-			//COPY REMAINING DATA FROM TEMP
+			// COPY REMAINING DATA FROM TEMP
 			uniqueString: uniqueString,
 			accountValid: false,
 			paid: false,
@@ -81,7 +81,9 @@ const superAdminServices = {
 
 		const body = "Your account is accepted. Activate your account at " + link;
 
-		mailer.sendTextMail(data.email, "Account accepted. Activation required", body);
+		mailer.sendTextMail(data.email,
+			"Account accepted. Activation required",
+			body);
 	},
 };
 
