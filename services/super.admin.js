@@ -1,6 +1,7 @@
 const crypto = require("crypto");
 
 const TempModel = require("../database/models/temp-model");
+const AdminModel = require("../database/models/admin-model");
 const hash = crypto.createHash("sha512");
 
 const superAdminServices = {
@@ -59,6 +60,9 @@ const superAdminServices = {
 		await TempModel.findByIdAndRemove(id);
 	},
 	acceptCollege: async (collegeID) => {
+		const data = await AdminModel.find(collegeID);
+		//TODO move to temp DB.
+		//Generate a link and send as email
 	},
 };
 
