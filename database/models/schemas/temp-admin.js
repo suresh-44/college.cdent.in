@@ -50,7 +50,7 @@ const tempAdmin = new mongoose.Schema({
 		type: Number,
 		required: true,
 		trim: true,
-	}
+	},
 });
 
 module.exports = tempAdmin;
