@@ -56,6 +56,23 @@ const collegeAdmin = new mongoose.Schema({
 		required: true,
 		trim: true,
 	},
+	uniqueString: {
+		type: String,
+		unique: true,
+		required: true,
+	},
+	accountValid: {
+		type: Boolean,
+		required: true,
+	},
+	paid: {
+		type: Boolean,
+		required: true,
+	},
+	validTill: {
+		type: Date,
+		required: false,
+	},
 });
 
 module.exports = collegeAdmin;
