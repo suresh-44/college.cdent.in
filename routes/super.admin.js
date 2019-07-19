@@ -4,28 +4,32 @@ const router = express.Router();
 const superAdmin = require("./../services/super.admin");
 
 router.get("/", (req, res) => {
-	res.render("super.admin.login", {title: "SuperAdmin"});
+	res.render("super_admin/index", {title: "Super Admin"});
 });
 
 router.post("/", async (req, res) => {
 	try {
 		await superAdmin.login(req, res);
 	} catch (e) {
-		// const errorMsg = e.message;
+		console.log(e);
+		res.render("super_admin/index", {title: "Super Admin", message: e.message});
 	}
 });
 
-router.get("/list/college", async (req, res) => {
+router.get("/dashboard", async (req, res) => {
 	try {
 		await superAdmin.checkLogin(req, res);
 		const data = await superAdmin.getCollegeData();
-		res.render("super.admin.dashboard", data);
+		// res.send(data);
+		res.render("super_admin/dashboard", {data});
 	} catch (e) {
-
+		// console.log(e)
+		res.render("super_admin/index", {title: "Super Admin", message: e.message});
 	}
 });
 
-router.get("/accept/:collegeID", async (req, res) => {
+router.get("/college/:id", async (req, res) => {
+
 	try {
 		await superAdmin.checkLogin(req, res);
 		await superAdmin.acceptCollege(req.params.collegeID);
@@ -33,5 +37,21 @@ router.get("/accept/:collegeID", async (req, res) => {
 
 	}
 });
+
+router.delete('/college/:id', async (req, res) => {
+	try {
+		await superAdmin.checkLogin(req, res);
+		await superAdmin.removeCollege(req, res);
+		res.redirect('/super/admin/dashboard');
+	} catch (e){
+		// console.log(e.message)
+		const data = await superAdmin.getCollegeData();
+		res.render("super_admin/dashboard", {data, message: e.message});
+	}
+})
+
+router.get('/logout',  (req, res) => {
+		superAdmin.logout(req,res)
+})
 
 module.exports = router;
