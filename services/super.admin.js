@@ -1,4 +1,6 @@
 const crypto = require("crypto");
+const utils = require("./../utils");
+const mailer = require("./mailer");
 
 const TempModel = require("../database/models/temp-model");
 const AdminModel = require("../database/models/admin-model");
@@ -60,9 +62,26 @@ const superAdminServices = {
 		await TempModel.findByIdAndRemove(id);
 	},
 	acceptCollege: async (collegeID) => {
-		const data = await AdminModel.find(collegeID);
-		//TODO move to temp DB.
-		//Generate a link and send as email
+		//GET old data
+		const data = await TempModel.find(collegeID);
+
+		//&& Generate a link to send as email
+		const uniqueString = utils.randomString(16);
+		const link = "https://college.cdent.co.in/" + "/account/create/" + uniqueString;
+
+		const adminModel = new AdminModel({
+			name: data.name,
+			//COPY REMAINING DATA FROM TEMP
+			uniqueString: uniqueString,
+			accountValid: false,
+			paid: false,
+		});
+
+		await adminModel.save();
+
+		const body = "Your account is accepted. Activate your account at " + link;
+
+		mailer.sendTextMail(data.email, "Account accepted. Activation required", body);
 	},
 };
 
