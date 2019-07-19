@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-let transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
 	sendmail: true,
 	newline: "unix",
 	path: "/usr/sbin/sendmail",
