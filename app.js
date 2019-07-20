@@ -18,10 +18,10 @@ const app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
-hbs.registerHelper('list', (items, options) => {
-	var out=""
+hbs.registerHelper('each', (items, options) => {
+	var out="";
 	for(var i=0, l=items.length; i<l; i++) {
-    out = out  + options.fn(items[i]) ;
+    out += options.fn(items[i]) ;
 	}
 	return out;
 })

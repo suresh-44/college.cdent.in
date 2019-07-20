@@ -6,7 +6,7 @@ const hash = crypto.createHash("sha512");
 const superAdminServices = {
 
 	login: async (req, res) => {
-		const inputPwdHash = hash.update(req.body.password, "utf8").digest("hex");
+		const inputPwdHash = crypto.createHash("sha512").update(req.body.password, "utf8").digest("hex");
 
 		if (process.env.SUPER_ADMIN_PWD === inputPwdHash) {
 			// Password is correct Login user now
@@ -19,7 +19,6 @@ const superAdminServices = {
 			req.session.superAdmin = true;
 			req.session.user = req.body.username;
 			req.session.secret = secret.digest('hex');
-			console.log("=====================================================\n"+req.session.secret+"\n+++++++++++++++++++++++++===================")
 			res.redirect("admin/list/college/");
 		} else {
 			throw new Error("Incorrect Password or username");
