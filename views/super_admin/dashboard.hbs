@@ -28,7 +28,7 @@
                 <td>{{name}}</td>
                 <td>{{email}}</td>
                 <td>
-                  <bu href="{{collegeWebsite}}" target="_blank">{{collegeName}}
+                  <a href="{{collegeWebsite}}" target="_blank">{{collegeName}}</a>
                 </td>
                 <td>{{collegeAddr}}</td>
                 <td>
@@ -65,7 +65,7 @@
                   </tr>
                   <tr>
                     <td>E-mail</td>
-                    <td>{{email}}</td>
+                    <td><a href="mailto:{{email}}">{{email}}</a></td>
                   </tr>
                   <tr>
                     <td>Role</td>
@@ -81,7 +81,7 @@
                   </tr>
                   <tr>
                     <td>Url</td>
-                    <td>{{collegeWebsite}}</td>
+                    <td><a href="{{collegeWebsite}}"> {{collegeWebsite}}</a></td>
                   </tr>
 
                   <tr>
@@ -93,14 +93,15 @@
                     <td>{{phone_no}}
                     </td>
                   </tr>
-
                 </tbody>
               </table>
             </div>
           </div>
           <div class="modal-footer ">
-            <a type="button" class="btn btn-outline-warning btn-lg" style="width: 70%; margin-right: 10% ">Remove</a>
-            <a type="button" class="btn btn-success btn-lg" style="width: 100%;">Accept</a>
+            <form method="POST" action="/super/admin/college/{{_id}}?_method=DELETE" style="width: 70%; margin-right: 8% ">
+              <button type="submit" class="btn btn-outline-warning btn-lg" >Remove</button>
+            </form>
+            <a href="/super/admin/college/{{_id}}" type="button" class="btn btn-success btn-lg" style="width: 100%;">Accept</a>
           </div>
         </div>
         <!-- /.modal-content -->

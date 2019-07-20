@@ -28,6 +28,9 @@ hbs.registerHelper('each', (items, options) => {
 })
 hbs.registerPartials(__dirname+ '/views/partials')
 
+// Method Override Middleware
+app.use(methodOveride('_method'))
+
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));

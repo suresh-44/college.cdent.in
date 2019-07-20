@@ -29,6 +29,7 @@ router.get("/dashboard", async (req, res) => {
 });
 
 router.get("/college/:id", async (req, res) => {
+
 	try {
 		await superAdmin.checkLogin(req, res);
 		await superAdmin.acceptCollege(req.params.collegeID);
@@ -36,5 +37,21 @@ router.get("/college/:id", async (req, res) => {
 
 	}
 });
+
+router.delete('/college/:id', async (req, res) => {
+	try {
+		await superAdmin.checkLogin(req, res);
+		await superAdmin.removeCollege(req, res);
+		res.redirect('/super/admin/dashboard');
+	} catch (e){
+		// console.log(e.message)
+		const data = await superAdmin.getCollegeData();
+		res.render("super_admin/dashboard", {data, message: e.message});
+	}
+})
+
+router.get('/logout',  (req, res) => {
+		superAdmin.logout(req,res)
+})
 
 module.exports = router;

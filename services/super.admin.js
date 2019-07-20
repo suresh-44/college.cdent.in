@@ -44,10 +44,20 @@ const superAdminServices = {
       res.redirect("/super/admin");
     }
   },
-  logout: async req => {},
+  logout: (req, res) => {
+		req.session.login = false;
+      req.session.superAdmin = false;
+      req.session.user = null;
+			req.session.secret = null;
+			res.redirect("/");
+	},
   getCollegeData: async () => {
     return TempModel.find();
-  },
+	},
+	removeCollege: async (req, res) => {
+		const id = req.params.id;
+	  await TempModel.findByIdAndRemove(id)
+	},
   acceptCollege: async collegeID => {}
 };
 
