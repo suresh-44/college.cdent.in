@@ -4,14 +4,15 @@ const router = express.Router();
 const superAdmin = require("./../services/super.admin");
 
 router.get("/", (req, res) => {
-	res.render("super.admin.login", {title: "SuperAdmin"});
+	res.render("super_admin/index", {title: "Super Admin"});
 });
 
 router.post("/", async (req, res) => {
 	try {
 		await superAdmin.login(req, res);
 	} catch (e) {
-		// const errorMsg = e.message;
+		console.log(e);
+		res.render("super_admin/index", {title: "Super Admin", message: e.message});
 	}
 });
 
@@ -19,9 +20,11 @@ router.get("/list/college", async (req, res) => {
 	try {
 		await superAdmin.checkLogin(req, res);
 		const data = await superAdmin.getCollegeData();
-		res.render("super.admin.dashboard", data);
+		// res.send(data);
+		res.render("super_admin/dashboard", {data});
 	} catch (e) {
-
+		// console.log(e)
+		res.render("super_admin/index", {title: "Super Admin", message: e.message});
 	}
 });
 

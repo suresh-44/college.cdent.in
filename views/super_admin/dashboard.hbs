@@ -1,0 +1,48 @@
+{{> navBar}}
+{{var count = 1}}
+<div class="container">
+  <div class="card card-body">
+    <div class="row">
+
+
+      <div class="col-md-12">
+        <h4 class="card-title">College List</h4>
+        <div class="table-responsive">
+
+
+          <table id="mytable" class="table table-bordred table-striped">
+
+            <thead>
+
+              <th>#</th>
+              <th>Name</th>
+              <th>E-mail</th>
+              <th>College Name</th>
+              <th>College Address</th>
+              <th>View</th>
+            </thead>
+            <tbody>
+              {{#list data}}
+              <tr>
+                <td>1</td>
+                <td>{{name}}</td>
+                <td>{{email}}</td>
+                <td><a href="{{collegeWebsite}}" target="_blank">{{collegeName}} </td>
+                <td>{{collegeAddr}}</td>
+                <td><a href="">See all</a></td>
+              </tr>
+
+
+              {{/list}}
+
+            </tbody>
+
+          </table>
+
+          <div class="clearfix"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
