@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 
-const tempAdmin = new mongoose.Schema({
+const collegeAdmin = new mongoose.Schema({
 	name: {
 		type: String,
 		required: true,
@@ -17,10 +17,10 @@ const tempAdmin = new mongoose.Schema({
 			message: "{VALUE} is not a valid email address.",
 		},
 	},
-	phone_no: {
-		type: Number,
-		required: true,
-		trim: true,
+	password: {
+		type: String,
+		required: false,
+		unique: true,
 	},
 	collegeName: {
 		type: String,
@@ -56,6 +56,23 @@ const tempAdmin = new mongoose.Schema({
 		required: true,
 		trim: true,
 	},
+	uniqueString: {
+		type: String,
+		unique: true,
+		required: true,
+	},
+	accountValid: {
+		type: Boolean,
+		required: true,
+	},
+	paid: {
+		type: Boolean,
+		required: true,
+	},
+	validTill: {
+		type: Date,
+		required: false,
+	},
 });
 
-module.exports = tempAdmin;
+module.exports = collegeAdmin;

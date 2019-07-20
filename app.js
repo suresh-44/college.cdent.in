@@ -6,9 +6,14 @@ const FileStore = require("session-file-store")(session);
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
+<<<<<<< HEAD
 const hbs = require('hbs')
 
 // const fileUpload = require("express-fileupload");
+=======
+const hbs = require("hbs");
+const methodOveride = require("method-override");
+>>>>>>> fef4bd1be7cc14279eb699f95d5b5c419f35feb8
 
 require("dotenv").config();
 
@@ -20,7 +25,21 @@ const app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
+<<<<<<< HEAD
 hbs.registerPartials(__dirname + '/views/partials');
+=======
+hbs.registerHelper("each", (items, options) => {
+	let out = "";
+	for (let i = 0, l = items.length; i < l; i++) {
+		out += options.fn(items[i]);
+	}
+	return out;
+});
+hbs.registerPartials(__dirname + "/views/partials");
+
+// Method Override Middleware
+app.use(methodOveride("_method"));
+>>>>>>> fef4bd1be7cc14279eb699f95d5b5c419f35feb8
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -45,14 +64,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.use(session(sessionOptions));
-// app.use(
-//   fileUpload({
-//     safeFileNames: true,
-//     preserveExtension: true,
-//     useTempFiles: true,
-//     tempFileDir: path.join(__dirname, "temp_upload")
-//   })
-// );
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);

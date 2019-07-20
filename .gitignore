@@ -80,4 +80,7 @@ typings/
 # uploads
 uploads/
 
+# Sessions folder
+sessions/
+
 pnpm-lock.yaml
