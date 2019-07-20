@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
 	}
 });
 
-router.get("/list/college", async (req, res) => {
+router.get("/dashboard", async (req, res) => {
 	try {
 		await superAdmin.checkLogin(req, res);
 		const data = await superAdmin.getCollegeData();
@@ -28,7 +28,7 @@ router.get("/list/college", async (req, res) => {
 	}
 });
 
-router.get("/accept/:collegeID", async (req, res) => {
+router.get("/college/:id", async (req, res) => {
 	try {
 		await superAdmin.checkLogin(req, res);
 		await superAdmin.acceptCollege(req.params.collegeID);

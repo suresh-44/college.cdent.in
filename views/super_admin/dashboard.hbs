@@ -27,54 +27,85 @@
                 <td>#</td>
                 <td>{{name}}</td>
                 <td>{{email}}</td>
-                <td><a href="{{collegeWebsite}}" target="_blank">{{collegeName}} </td>
+                <td>
+                  <bu href="{{collegeWebsite}}" target="_blank">{{collegeName}}
+                </td>
                 <td>{{collegeAddr}}</td>
-                <td><a href="">See all</a></td> 
-                <td><p data-placement="top" data-toggle="tooltip" title="Edit"><button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit" ><span class="glyphicon glyphicon-pencil"></span></button></p></td>
-
+                <td>
+                  <p data-placement="top" data-toggle="tooltip" title="View the document">
+                    <button class="btn btn-info btn-sm" data-title="View" data-toggle="modal" data-target="#{{role}}">
+                      view</button></p>
+                </td>
               </tr>
-
-
               {{/each}}
-
             </tbody>
-
           </table>
-
-          <div class="clearfix"></div>
         </div>
-
       </div>
     </div>
   </div>
-</div>
 
-<div class="modal fade" id="edit" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
-      <div class="modal-dialog">
-    <div class="modal-content">
-          <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
-        <h4 class="modal-title custom_align" id="Heading">Edit Your Detail</h4>
-      </div>
-          <div class="modal-body">
-          <div class="form-group">
-        <input class="form-control " type="text" placeholder="Mohsin">
+  {{#each data}}
+  <div class="modal fade" id="{{role}}" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+
+          <h4 class="modal-title text-center" id="Heading">College Detail</h4>
+          <button type="button" class="close btn-danger" data-dismiss="modal" aria-hidden="true">X</button>
         </div>
-        <div class="form-group">
-        
-        <input class="form-control " type="text" placeholder="Irshad">
-        </div>
-        <div class="form-group">
-        <textarea rows="2" class="form-control" placeholder="CB 106/107 Street # 11 Wah Cantt Islamabad Pakistan"></textarea>
-    
-        
-        </div>
-      </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <table class="table table-user-information">
+                <tbody>
+                  <tr>
+                    <td>Name</td>
+                    <td>{{name}}</td>
+                  </tr>
+                  <tr>
+                    <td>E-mail</td>
+                    <td>{{email}}</td>
+                  </tr>
+                  <tr>
+                    <td>Role</td>
+                    <td>{{role}}</td>
+                  </tr>
+                  <tr>
+                    <td>College Name</td>
+                    <td>{{collegeName}}</td>
+                  </tr>
+                  <tr>
+                    <td>College Address</td>
+                    <td>{{collegeAddr}}</td>
+                  </tr>
+                  <tr>
+                    <td>Url</td>
+                    <td>{{collegeWebsite}}</td>
+                  </tr>
+
+                  <tr>
+                    <td>Authentication Letter</td>
+                    <td><a href="mailto:info@support.com">{{authLetterFile}}</a></td>
+                  </tr>
+                  <tr>
+                    <td>Phone Number</td>
+                    <td>{{phone_no}}
+                    </td>
+                  </tr>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
           <div class="modal-footer ">
-        <button type="button" class="btn btn-warning btn-lg" style="width: 100%;"><span class="glyphicon glyphicon-ok-sign"></span> Update</button>
-      </div>
+            <a type="button" class="btn btn-outline-warning btn-lg" style="width: 70%; margin-right: 10% ">Remove</a>
+            <a type="button" class="btn btn-success btn-lg" style="width: 100%;">Accept</a>
+          </div>
         </div>
-    <!-- /.modal-content --> 
-  </div>
-      <!-- /.modal-dialog --> 
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
     </div>
+  </div>
+  {{/each}}

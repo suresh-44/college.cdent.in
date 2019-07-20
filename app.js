@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
 const hbs = require('hbs')
+const methodOveride = require('method-override');
 
 require("dotenv").config();
 
