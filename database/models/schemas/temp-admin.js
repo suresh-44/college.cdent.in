@@ -51,11 +51,6 @@ const tempAdmin = new mongoose.Schema({
 		required: true,
 		trim: true,
 	},
-	phone_no: {
-		type: Number,
-		required: true,
-		trim: true,
-	},
 });
 
 module.exports = tempAdmin;

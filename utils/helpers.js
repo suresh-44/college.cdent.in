@@ -1,8 +1,10 @@
 
 module.exports = hbs => {
   hbs.registerHelper("each", (items, options) => {
-    let out = "";
+    let out = "", count = 0;
+    
     for (let i = 0, l = items.length; i < l; i++) {
+      items[i].count = ++count;
       out += options.fn(items[i]);
     }
     return out;
