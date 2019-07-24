@@ -73,7 +73,7 @@ const superAdminServices = {
 			name: data.name,
 			email : data.email,
 			phone_no : data.phone_no,
-			collegeName : data.collegName,
+			collegeName: data.collegeName,
 			collegeAddr : data.collegeAddr,
 			collegeWebsite : data.collegeWebsite,
 			authLetterFile : data.authLetterFile,
