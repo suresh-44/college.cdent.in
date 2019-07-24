@@ -4,7 +4,6 @@ const mailer = require("./mailer");
 
 const TempModel = require("../database/models/temp-model");
 const AdminModel = require("../database/models/admin-model");
-const hash = crypto.createHash("sha512");
 
 const superAdminServices = {
 	login: async (req, res) => {
@@ -36,7 +35,9 @@ const superAdminServices = {
 		const userIP =
 			req.header("x-forwarded-for") || req.connection.remoteAddress;
 		const str = browser + userIP + process.env.SUPER_ADMIN_PWD;
-		const loginHash = hash.update(str, "utf8").digest("hex");
+		const loginHash = crypto.createHash("sha512")
+			.update(str, "utf8")
+			.digest("hex");
 		if (
 			!(
 				req.session.login &&
@@ -71,13 +72,13 @@ const superAdminServices = {
 
 		const adminModel = new AdminModel({
 			name: data.name,
-			email : data.email,
-			phone_no : data.phone_no,
+			email: data.email,
+			phone_no: data.phone_no,
 			collegeName: data.collegeName,
-			collegeAddr : data.collegeAddr,
-			collegeWebsite : data.collegeWebsite,
-			authLetterFile : data.authLetterFile,
-			role : data.role,
+			collegeAddr: data.collegeAddr,
+			collegeWebsite: data.collegeWebsite,
+			authLetterFile: data.authLetterFile,
+			role: data.role,
 			uniqueString: uniqueString,
 			accountValid: false,
 			paid: false,

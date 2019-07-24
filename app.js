@@ -6,14 +6,14 @@ const FileStore = require("session-file-store")(session);
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
-const hbs = require('hbs')
+const hbs = require("hbs");
 
 require("dotenv").config();
 
 const indexRouter = require("./routes/index");
 const superAdminRouter = require("./routes/super.admin");
 
-const registerHelper = require('./utils/helpers')
+const registerHelper = require("./utils/helpers");
 
 const app = express();
 
@@ -32,7 +32,7 @@ app.set("view engine", "hbs");
 // 	console.log(arg.code)
 // 	if(arg.code === 200) {
 // 		return options.fn(arg)
-// 	}  
+// 	}
 // 	return options.inverse(arg);
 // })
 registerHelper(hbs);
@@ -48,7 +48,7 @@ app.use(cookieParser());
 // session setup
 const sessionOptions = {
 	store: new FileStore({}),
-	secret: "dfsdfsd", //process.env.SESSION_SECRET,
+	secret: "dfsdfsd", // process.env.SESSION_SECRET,
 	resave: true,
 	saveUninitialized: false,
 	cookie: {secure: false},

@@ -21,7 +21,7 @@ router.get("/dashboard", async (req, res) => {
 		await superAdmin.checkLogin(req, res);
 		const data = await superAdmin.getCollegeData();
 		// res.send(data);
-		res.render("super_admin/dashboard", {data, isLogedin : true});
+		res.render("super_admin/dashboard", {data, isLogedin: true});
 	} catch (e) {
 		// console.log(e)
 		res.render("super_admin/index", {title: "Super Admin", message: e.message});
@@ -32,7 +32,7 @@ router.get("/college/:id", async (req, res) => {
 	try {
 		await superAdmin.checkLogin(req, res);
 		await superAdmin.acceptCollege(req.params.id);
-	} catch (e) {	
+	} catch (e) {
 
 	}
 });

@@ -1,4 +1,4 @@
-const express = require("express");	
+const express = require("express");
 const router = express.Router();
 const upload = require("../utils/multer");
 
@@ -10,7 +10,7 @@ router.get("/", function(req, res, next) {
 });
 
 router.get("/register", (req, res) => {
-	res.render("register", {title: "Register", key : process.env.RECAPCTHA_KEY});
+	res.render("register", {title: "Register", key: process.env.RECAPCTHA_KEY});
 });
 //
 router.post("/register", upload.single("file"), async (req, res) => {
@@ -23,9 +23,13 @@ router.post("/register", upload.single("file"), async (req, res) => {
 	} catch (error) {
 		rVal.message = error.message;
 		rVal.code = 402;
-	}	
-console.log(rVal)
-	res.render("register",{ response : rVal, title: "Register", key : process.env.RECAPCTHA_KEY})
+	}
+	console.log(rVal);
+	res.render("register", {
+		response: rVal,
+		title: "Register",
+		key: process.env.RECAPCTHA_KEY,
+	});
 });
 
 router.get("");
