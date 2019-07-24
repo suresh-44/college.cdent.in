@@ -71,7 +71,13 @@ const superAdminServices = {
 
 		const adminModel = new AdminModel({
 			name: data.name,
-			// COPY REMAINING DATA FROM TEMP
+			email : data.email,
+			phone_no : data.phone_no,
+			collegeName : data.collegName,
+			collegeAddr : data.collegeAddr,
+			collegeWebsite : data.collegeWebsite,
+			authLetterFile : data.authLetterFile,
+			role : data.role,
 			uniqueString: uniqueString,
 			accountValid: false,
 			paid: false,

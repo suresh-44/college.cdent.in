@@ -1,27 +1,40 @@
+const axios = require("axios");
+
 const TempModel = require("../database/models/temp-model");
 
-const upload = require("../utils/multer").single("file");
-
 const register = async (req, res) => {
-	let tempModel;
-	upload(req, res, (err) => {
-		if (err) {
-			return new Error(err);
-		}
+  let tempModel, response;
+  const secret = process.env.RECAPCTHA_SECRET;
+  const recaptcha = req.body["g-recaptcha-response"];
+  const user_ip =	req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+		
+  const verificationURL = `https://www.google.com/recaptcha/api/siteverify?secret=${secret}&response=${recaptcha}&remoteip=${user_ip}`;
 
-		tempModel = new TempModel({
-			name: req.body.name,
-			email: req.body.email,
-			role: req.body.role,
-			collegeName: req.body.collegeName,
-			collegeAddr: req.body.collegeAddr,
-			collegeWebsite: req.body.collegeUrl,
-			authLetterFile: req.file.destination + req.file.filename,
-		}).save();
-	});
+  response = await axios.get(verificationURL);
 
-	await tempModel;
-	// TODO saving and validating but can't send error message if not validated
+  if (!response.data.success) {
+    throw new Error(response.data["error-codes"]);
+  } else {
+			const temp = await TempModel.find({
+																					email: req.body.email
+																					});
+																					
+			if (temp.length > 0) {
+					throw new Error("Email address already exists");
+			} else {
+					tempModel = new TempModel({
+						name: req.body.name,
+						email: req.body.email,
+						role: req.body.role,
+						phone_no: req.body.phone_no,
+						collegeName: req.body.clgName,
+						collegeAddr: req.body.clgAddr,
+						collegeWebsite: req.body.clgUrl,
+						authLetterFile: req.file.location
+					});
+					return await tempModel.save();
+			}
+  }
 };
 
 module.exports = register;

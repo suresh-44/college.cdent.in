@@ -6,30 +6,37 @@ const FileStore = require("session-file-store")(session);
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
-const hbs = require("hbs");
-const methodOveride = require("method-override");
+const hbs = require('hbs')
 
 require("dotenv").config();
 
 const indexRouter = require("./routes/index");
 const superAdminRouter = require("./routes/super.admin");
 
+const registerHelper = require('./utils/helpers')
+
 const app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
-hbs.registerHelper("each", (items, options) => {
-	let out = "";
-	for (let i = 0, l = items.length; i < l; i++) {
-		out += options.fn(items[i]);
-	}
-	return out;
-});
-hbs.registerPartials(__dirname + "/views/partials");
+// hbs.registerHelper("each", (items, options) => {
+// 	let out = "";
+// 	for (let i = 0, l = items.length; i < l; i++) {
+// 		out += options.fn(items[i]);
+// 	}
+// 	return out;
+// });
 
-// Method Override Middleware
-app.use(methodOveride("_method"));
+// hbs.registerHelper("isEqual", (arg, options)=> {
+// 	console.log(arg.code)
+// 	if(arg.code === 200) {
+// 		return options.fn(arg)
+// 	}  
+// 	return options.inverse(arg);
+// })
+registerHelper(hbs);
+hbs.registerPartials(__dirname + "/views/partials");
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -41,7 +48,7 @@ app.use(cookieParser());
 // session setup
 const sessionOptions = {
 	store: new FileStore({}),
-	secret: process.env.SESSION_SECRET,
+	secret: "dfsdfsd", //process.env.SESSION_SECRET,
 	resave: true,
 	saveUninitialized: false,
 	cookie: {secure: false},
