@@ -8,19 +8,35 @@ const bodyParser = require("body-parser");
 const logger = require("morgan");
 const hbs = require('hbs')
 
-// const fileUpload = require("express-fileupload");
-
 require("dotenv").config();
 
 const indexRouter = require("./routes/index");
 const superAdminRouter = require("./routes/super.admin");
+
+const registerHelper = require('./utils/helpers')
 
 const app = express();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
-hbs.registerPartials(__dirname + '/views/partials');
+// hbs.registerHelper("each", (items, options) => {
+// 	let out = "";
+// 	for (let i = 0, l = items.length; i < l; i++) {
+// 		out += options.fn(items[i]);
+// 	}
+// 	return out;
+// });
+
+// hbs.registerHelper("isEqual", (arg, options)=> {
+// 	console.log(arg.code)
+// 	if(arg.code === 200) {
+// 		return options.fn(arg)
+// 	}  
+// 	return options.inverse(arg);
+// })
+registerHelper(hbs);
+hbs.registerPartials(__dirname + "/views/partials");
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -45,14 +61,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 app.use(session(sessionOptions));
-// app.use(
-//   fileUpload({
-//     safeFileNames: true,
-//     preserveExtension: true,
-//     useTempFiles: true,
-//     tempFileDir: path.join(__dirname, "temp_upload")
-//   })
-// );
+
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);

@@ -1,18 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-
-  <title>{{title}}</title>
-</head>
-
-<body>
 
   {{> _navBar}}
   <div class="container center">
+    {{#if response}}
+      {{#isEqual response}}
+        <h2 class="h5 text-capitalize  text-success">{{message}}</h2>
+        {{else}}   
+         <h2 class="h5 text-capitalize  text-danger">{{message}}</h2>
+        {{/isEqual}}
+    {{/if}}
 
     <div class="card card-body">
       <h1 class="display-5 h1  mb-3 card-title">Register<hr></h1>
@@ -63,6 +58,3 @@
 
 
   </div>
-</body>
-
-</html>

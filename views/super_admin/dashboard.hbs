@@ -1,0 +1,112 @@
+{{> navBar}}
+
+<div class="container">
+  <div class="card card-body">
+    <div class="row">
+
+
+      <div class="col-md-12">
+        <h4 class="card-title">College List</h4>
+        <div class="table-responsive">
+
+
+          <table id="mytable" class="table table-bordred table-striped">
+
+            <thead>
+
+              <th>#</th>
+              <th>Name</th>
+              <th>E-mail</th>
+              <th>College Name</th>
+              <th>College Address</th>
+              <th>View</th>
+            </thead>
+            <tbody>
+              {{#each data}}
+              <tr>
+                <td>{{count}}</td>
+                <td>{{name}}</td>
+                <td>{{email}}</td>
+                <td>
+                  <a href="{{collegeWebsite}}" target="_blank">{{collegeName}}</a>
+                </td>
+                <td>{{collegeAddr}}</td>
+                <td>
+                  <p data-placement="top" data-toggle="tooltip" title="View the document">
+                    <button class="btn btn-info btn-sm" data-title="View" data-toggle="modal" data-target="#{{role}}{{count}}">
+                      view</button></p>
+                </td>
+              </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{#each data}}
+  <div class="modal fade" id="{{role}}{{count}}" tabindex="-1" role="dialog" aria-labelledby="edit" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+
+          <h4 class="modal-title text-center" id="Heading">College Detail</h4>
+          <button type="button" class="close btn-danger" data-dismiss="modal" aria-hidden="true">X</button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <table class="table table-user-information">
+                <tbody>
+                  <tr>
+                    <td>Name</td>
+                    <td>{{name}}</td>
+                  </tr>
+                  <tr>
+                    <td>E-mail</td>
+                    <td><a href="mailto:{{email}}">{{email}}</a></td>
+                  </tr>
+                  <tr>
+                    <td>Role</td>
+                    <td>{{role}}</td>
+                  </tr>
+                  <tr>
+                    <td>College Name</td>
+                    <td>{{collegeName}}</td>
+                  </tr>
+                  <tr>
+                    <td>College Address</td>
+                    <td>{{collegeAddr}}</td>
+                  </tr>
+                  <tr>
+                    <td>Url</td>
+                    <td><a href="{{collegeWebsite}}"> {{collegeWebsite}}</a></td>
+                  </tr>
+
+                  <tr>
+                    <td>Authentication Letter</td>
+                    <td><a href="mailto:info@support.com">{{authLetterFile}}</a></td>
+                  </tr>
+                  <tr>
+                    <td>Phone Number</td>
+                    <td>{{phone_no}}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer ">
+            <form method="POST" action="/super/admin/college/{{_id}}?_method=DELETE" style="width: 70%; margin-right: 8% ">
+              <button type="submit" class="btn btn-outline-warning btn-lg" >Remove</button>
+            </form>
+            <a href="/super/admin/college/{{_id}}" type="button" class="btn btn-success btn-lg" style="width: 100%;">Accept</a>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+    </div>
+  </div>
+  {{/each}}
