@@ -31,18 +31,33 @@ const collegeAdmin = {
 			throw new Error(e);
 		}
 
-		const inputPwdHash = crypto
+		const pwdHash = crypto
 			.createHash("sha512")
 			.update(pwd, "utf8")
 			.digest("hex");
 
 		let query = {uniqueString: uniqueString};
 		let update = {
-			password: inputPwdHash,
+			password: pwdHash,
 			accountValid: true,
 			uniqueString: 1,
 		};
 		await AdminModel.findOneAndUpdate(query, update);
+	},
+
+	login: async (req, res) => {
+		let email = req.body.email;
+		let pwd = req.body.password;
+		let inputHash = crypto.createHash("sha512")
+			.update(pwd, "utf-8")
+			.digest("hex");
+
+		let query = {email: email, password: inputHash};
+		let data = await AdminModel.findOne(query);
+		//TODO check if password is correct
+		// if correct check if payment is done.
+		// if payment is done redirect to /admin/dashboard
+		// else redirect to /admin/pay
 	},
 
 };

@@ -51,4 +51,16 @@ router.post("/account/create/:uniqueString", async (req, res) => {
 	}
 });
 
+router.get("/admin/login", async (req, res) => {
+	// TODO load the admin login form
+});
+
+router.get("/admin/login", async (req, res) => {
+	try {
+		await collegeAdmin.login(req, res);
+	} catch (e) {
+
+	}
+});
+
 module.exports = router;
