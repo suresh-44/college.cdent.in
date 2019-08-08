@@ -28,7 +28,7 @@ router.get("/dashboard", async (req, res) => {
 	}
 });
 
-router.get("/college/:id", async (req, res) => {
+router.get("/college/accept/:id", async (req, res) => {
 	try {
 		await superAdmin.checkLogin(req, res);
 		await superAdmin.acceptCollege(req.params.id);
@@ -37,7 +37,7 @@ router.get("/college/:id", async (req, res) => {
 	}
 });
 
-router.delete("/college/:id", async (req, res) => {
+router.delete("/college/delete/:id", async (req, res) => {
 	try {
 		await superAdmin.checkLogin(req, res);
 		await superAdmin.removeCollege(req, res);

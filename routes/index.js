@@ -3,7 +3,7 @@ const router = express.Router();
 const upload = require("../utils/multer");
 
 const register = require("../services/registration");
-const AdminModel = require("../database/models/admin-model");
+const collegeAdmin = require("../services/college-admin");
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -34,7 +34,21 @@ router.post("/register", upload.single("file"), async (req, res) => {
 });
 
 router.get("/account/create/:uniqueString", async (req, res) => {
-	
+	try {
+		await collegeAdmin.checkExists(req);
+		// TODO show the password creation dialog box.
+	} catch (e) {
+		// TODO show error, invalid link
+	}
+});
+
+router.post("/account/create/:uniqueString", async (req, res) => {
+	try {
+		await collegeAdmin.setPassword(req);
+		res.redirect("/admin/login");
+	} catch (e) {
+		// TODO show error.
+	}
 });
 
 module.exports = router;

@@ -56,7 +56,7 @@ const superAdminServices = {
 		res.redirect("/");
 	},
 	getCollegeData: async () => {
-		return TempModel.find();
+		return TempModel.find({});
 	},
 	removeCollege: async (req, res) => {
 		const id = req.params.id;
@@ -64,7 +64,7 @@ const superAdminServices = {
 	},
 	acceptCollege: async (collegeID) => {
 		// GET old data
-		const data = await TempModel.find(collegeID);
+		const data = await TempModel.findById(collegeID);
 
 		// && Generate a link to send as email
 		const uniqueString = utils.randomString(16);
