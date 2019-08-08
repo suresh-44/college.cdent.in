@@ -53,4 +53,5 @@ router.get("/logout", async (req, res) => {
 	await superAdmin.logout(req, res);
 });
 
+
 module.exports = router;

@@ -3,6 +3,7 @@ const router = express.Router();
 const upload = require("../utils/multer");
 
 const register = require("../services/registration");
+const AdminModel = require("../database/models/admin-model");
 
 /* GET home page. */
 router.get("/", function(req, res, next) {
@@ -32,6 +33,8 @@ router.post("/register", upload.single("file"), async (req, res) => {
 	});
 });
 
-router.get("");
+router.get("/account/create/:uniqueString", async (req, res) => {
+	
+});
 
 module.exports = router;
