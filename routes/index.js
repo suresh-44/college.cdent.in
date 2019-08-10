@@ -1,12 +1,32 @@
 const express = require("express");
+const csv = require('fast-csv');
+const fs = require('fs');
+
+const upload= require("../utils/multer");
+
+
+// const csvfile = __dirname+'/../playground/test.csv'
+// fs.createReadStream(csvfile)
+// 	.pipe(csv.parse({headers: true}))
+// 	.on('data', row => console.log(row))
+
 const router = express.Router();
 
 const register = require("../services/registration");
 
 /* GET home page. */
-router.get("/", function(req, res, next) {
+router.get("/", (req, res, next) => {
 	res.render("index", {title: "Express"});
 });
+
+router.post('/',upload.storageCsv.single("csv"), (req, res) => {
+
+	// console.log(req.file);
+	// res.send(req.file);
+	fs.createReadStream(req.file.path)
+		.pipe(csv.parse(	{headers: true}))
+		.on('data', row => console.log(row))
+})
 
 router.get("/register", (req, res) => {
 	res.render("register", {title: "Register"});

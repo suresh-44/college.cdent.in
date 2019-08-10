@@ -1,6 +1,6 @@
 const TempModel = require("../database/models/temp-model");
 
-const upload = require("../utils/multer").single("file");
+const upload = require("../utils/multer").storagePdf.single("file")
 
 const register = async (req, res) => {
 	let tempModel;
