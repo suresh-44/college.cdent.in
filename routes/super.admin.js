@@ -28,22 +28,27 @@ router.get("/dashboard", async (req, res) => {
 	}
 });
 
+/**
+ * GET /super/admin/college/:id for accepting the college
+ * @function acceptCollege(id)
+ * @param {string} id college id to accept the college 
+ */
 router.get("/college/accept/:id", async (req, res) => {
 	try {
 		await superAdmin.checkLogin(req, res);
 		await superAdmin.acceptCollege(req.params.id);
+		res.redirect('/super/admin/dashboard')
 	} catch (e) {
-
+    res.render("super_admin/index", {title: "Super Admin", message: e.message});
 	}
 });
 
-router.delete("/college/delete/:id", async (req, res) => {
+router.delete("/college/remove/:id", async (req, res) => {
 	try {
 		await superAdmin.checkLogin(req, res);
 		await superAdmin.removeCollege(req, res);
 		res.redirect("/super/admin/dashboard");
 	} catch (e) {
-		// console.log(e.message)
 		const data = await superAdmin.getCollegeData();
 		res.render("super_admin/dashboard", {data, message: e.message});
 	}

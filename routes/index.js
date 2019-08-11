@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const upload = require("../utils/multer");
 
-const register = require("../services/registration");
 const collegeAdmin = require("../services/college-admin");
 
 /* GET home page. */
@@ -13,12 +12,12 @@ router.get("/", function(req, res, next) {
 router.get("/register", (req, res) => {
 	res.render("register", {title: "Register", key: process.env.RECAPCTHA_KEY});
 });
-//
+//  POST /register for register the college
 router.post("/register", upload.single("file"), async (req, res) => {
 	const rVal = {};
 
 	try {
-		await register(req, res);
+		await collegeAdmin.register(req, res);
 		rVal.message = "Registration is Done Successful";
 		rVal.code = 200;
 	} catch (error) {
@@ -36,9 +35,14 @@ router.post("/register", upload.single("file"), async (req, res) => {
 router.get("/account/create/:uniqueString", async (req, res) => {
 	try {
 		await collegeAdmin.checkExists(req);
-		// TODO show the password creation dialog box.
+		res.render('create_password',{
+			title: "Create Password",
+			key: process.env.RECAPCTHA_KEY,
+			uniqueString : req.params.uniqueString
+		})
 	} catch (e) {
 		// TODO show error, invalid link
+		res.render('404.hbs', {title:"Not Found", message : "Account is not created"})
 	}
 });
 
@@ -47,7 +51,7 @@ router.post("/account/create/:uniqueString", async (req, res) => {
 		await collegeAdmin.setPassword(req);
 		res.redirect("/admin/login");
 	} catch (e) {
-		// TODO show error.
+		es.render('404.hbs', { 'message' :e.message})
 	}
 });
 
@@ -55,7 +59,7 @@ router.get("/admin/login", async (req, res) => {
 	// TODO load the admin login form
 });
 
-router.get("/admin/login", async (req, res) => {
+router.post("/admin/login", async (req, res) => {
 	try {
 		await collegeAdmin.login(req, res);
 	} catch (e) {

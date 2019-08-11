@@ -83,4 +83,6 @@ uploads/
 # Sessions folder
 sessions/
 
+playground/
+
 pnpm-lock.yaml
