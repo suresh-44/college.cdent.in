@@ -1,19 +1,16 @@
 {{> navBar}}
 
 <div class="container">
+  {{#if message}}
+    <h4 class="h5 text-center text-info">{{message}}</h4>
+  {{/if}}
   <div class="card card-body">
     <div class="row">
-
-
       <div class="col-md-12">
         <h4 class="card-title">College List</h4>
         <div class="table-responsive">
-
-
           <table id="mytable" class="table table-bordred table-striped">
-
             <thead>
-
               <th>#</th>
               <th>Name</th>
               <th>E-mail</th>
@@ -50,7 +47,6 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-
           <h4 class="modal-title text-center" id="Heading">College Detail</h4>
           <button type="button" class="close btn-danger" data-dismiss="modal" aria-hidden="true">X</button>
         </div>
@@ -83,10 +79,9 @@
                     <td>Url</td>
                     <td><a href="{{collegeWebsite}}"> {{collegeWebsite}}</a></td>
                   </tr>
-
                   <tr>
                     <td>Authentication Letter</td>
-                    <td><a href="mailto:info@support.com">{{authLetterFile}}</a></td>
+                    <td><a href="{{authLetterFile}}" class="btn btn-small btn-outline-secondary">Click to View</a></td>
                   </tr>
                   <tr>
                     <td>Phone Number</td>
@@ -99,9 +94,9 @@
           </div>
           <div class="modal-footer ">
             <form method="POST" action="/super/admin/college/{{_id}}?_method=DELETE" style="width: 70%; margin-right: 8% ">
-              <button type="submit" class="btn btn-outline-warning btn-lg" >Remove</button>
+              <button type="submit" class="btn btn-outline-danger btn-lg" >Remove</button>
             </form>
-            <a href="/super/admin/college/{{_id}}" type="button" class="btn btn-success btn-lg" style="width: 100%;">Accept</a>
+            <a href="/super/admin/college/accept/{{_id}}" type="button" class="btn btn-success btn-lg" style="width: 100%;">Accept</a>
           </div>
         </div>
         <!-- /.modal-content -->

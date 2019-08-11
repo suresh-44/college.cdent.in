@@ -164,3 +164,13 @@ a {
 .toppad {
     margin-top: 20px;
 }
+
+/* Create Password */
+.col-centered {
+    height: 100vh;
+    top: 25vh;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+  }
