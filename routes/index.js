@@ -42,7 +42,6 @@ router.get("/account/create/:uniqueString", async (req, res) => {
 			uniqueString: req.params.uniqueString,
 		});
 	} catch (e) {
-		// TODO show error, invalid link
 		res.render("404.hbs", {title: "Not Found", message: "Account is not created"});
 	}
 });
@@ -50,7 +49,7 @@ router.get("/account/create/:uniqueString", async (req, res) => {
 router.post("/account/create/:uniqueString", async (req, res) => {
 	try {
 		await collegeAdmin.setPassword(req);
-		res.redirect("/admin/login");
+		res.render("login", {success: "Successfully created the Password"});
 	} catch (e) {
 		es.render("404.hbs", {"message": e.message});
 	}
@@ -58,6 +57,7 @@ router.post("/account/create/:uniqueString", async (req, res) => {
 
 router.get("/admin/login", async (req, res) => {
 	// TODO load the admin login form
+	res.send("Hello for the login");
 });
 
 router.post("/admin/login", async (req, res) => {
