@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const crypto = require("crypto");
 
 // Database modles
@@ -41,15 +42,10 @@ exports.setPassword = async (req) => {
 		} catch (e) {
 			throw new Error(e);
 		}
-
-		const pwdHash = crypto
-			.createHash("sha512")
-			.update(pwd, "utf8")
-			.digest("hex");
-
+		/* eslint-disable indent */
 		const query = {uniqueString};
 		const update = {
-			password: pwdHash,
+			password: pwd,
 			accountValid: true,
 			uniqueString: 1,
 		};
@@ -57,21 +53,39 @@ exports.setPassword = async (req) => {
 	}
 };
 
+// eslint-disable-next-line valid-jsdoc
+/**
+ * @function login(email,  pwd)
+ * @param {Object, Object} req, res
+ * @param {String} req.body.email
+ * @param {String} req.body.password
+ * @description check the password is correct
+ *@todo if password is correct then generate a jwt token for authentication
+ * @return admin data || Error
+ * */
 exports.login = async (req, res) => {
 	const email = req.body.email;
 	const pwd = req.body.password;
+	/* eslint-disable indent */
 	const inputHash = crypto
-		.createHash("sha512")
-		.update(pwd, "utf-8")
-		.digest("hex");
+										.createHash("sha512")
+										.update(pwd, "utf-8")
+										.digest("hex");
 
-	// eslint-disable-next-line  no-unused-vars
-	const query = {email, password: inputHash};
-	// const data = await AdminModel.findOne(query);
-	// TODO check if password is correct
-	// if correct check if payment is done.
-	// if payment is done redirect to /admin/dashboard
-	// else redirect to /admin/pay
+	const admin = await AdminModel.findOne({email});
+	return new Promise((resolve, reject)=> {
+		if (data) {
+			if (admin.password === inputHash && admin.accountValid) {
+				resolve(admin);
+			} else {
+				reject(new Error("Password is incorrect"));
+			}
+		} else {
+			// TODO give valid response message
+			// eslint-disable-next-line no-mixed-spaces-and-tabs
+ 			reject(new Error("Admin/Account is not found"));
+		}
+	});
 };
 
 exports.register = async (req, res) => {

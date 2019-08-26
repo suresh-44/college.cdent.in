@@ -1,5 +1,7 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 
 const collegeAdmin = new mongoose.Schema({
 	name: {
@@ -73,6 +75,74 @@ const collegeAdmin = new mongoose.Schema({
 		type: Date,
 		required: false,
 	},
+	tokens: [{
+		access: {
+			type: String,
+			required: true,
+		},
+		token: {
+			type: String,
+			required: true,
+		},
+	}],
+});
+
+
+/*
+	* @function generateAuthToken
+	* @description generate the token using jwt after we save it in database
+	* and return the token
+* */
+collegeAdmin.methods.generateAuthToken = () => {
+	const admin = this;
+	const access = "auth";
+
+	/* eslint-disable indent */
+	const token = jwt.sign({
+		// eslint-disable-next-line max-len
+													exp: ~~((Date.now() / 1000) + (60 * 60)), // valid only for 1hr
+		// eslint-disable-next-line max-len
+													_id: admin._id.toHexString(), // to authenticate  logged in admin in other router
+													access,
+												}, process.env.JWT_SECRET, (err, token) => {
+															if (!err && token) return token;
+															else throw new Error(err);
+													});
+
+	admin.tokens.push({access, token});
+
+	return admin.save().then(()=> {
+		return token;
+	});
+};
+
+/*
+* @function removeToken()
+* @param {String} token
+* @description this function can be used to remove the token from database
+* */
+collegeAdmin.methods.removeToken = (token) => {
+	return this.update({
+		$pull: {
+			tokens: {
+				token,
+			},
+		},
+	});
+};
+
+collegeAdmin.pre("save", async (next) => {
+	const admin = this;
+	/* eslint-disable indent */
+	if (admin.isModified("password")) {
+		admin.password = crypto
+											.createHash("sha512")
+											.update(pwd, "utf8")
+											.digest("hex");
+		next();
+	} else {
+		next();
+	}
 });
 
 module.exports = collegeAdmin;

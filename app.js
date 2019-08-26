@@ -20,21 +20,6 @@ const app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
-// hbs.registerHelper("each", (items, options) => {
-// 	let out = "";
-// 	for (let i = 0, l = items.length; i < l; i++) {
-// 		out += options.fn(items[i]);
-// 	}
-// 	return out;
-// });
-
-// hbs.registerHelper("isEqual", (arg, options)=> {
-// 	console.log(arg.code)
-// 	if(arg.code === 200) {
-// 		return options.fn(arg)
-// 	}
-// 	return options.inverse(arg);
-// })
 registerHelper(hbs);
 hbs.registerPartials(__dirname + "/views/partials");
 
