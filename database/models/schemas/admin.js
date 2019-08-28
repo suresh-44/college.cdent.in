@@ -87,41 +87,91 @@ const collegeAdmin = new mongoose.Schema({
 	}],
 });
 
+const createHash = (key) => {
+	return crypto
+		.createHash("sha512")
+		.update(key, "utf8")
+		.digest("hex");
+};
 
-/*
-	* @function generateAuthToken
-	* @description generate the token using jwt after we save it in database
-	* and return the token
-* */
+/**
+ * generate the jwt token for authentication
+ * @return {String} token generated jwt Token is saved in database and return
+ */
 collegeAdmin.methods.generateAuthToken = () => {
 	const admin = this;
 	const access = "auth";
 
-	/* eslint-disable indent */
+	// creating the jet token
 	const token = jwt.sign({
-		// eslint-disable-next-line max-len
-													exp: ~~((Date.now() / 1000) + (60 * 60)), // valid only for 1hr
-		// eslint-disable-next-line max-len
-													_id: admin._id.toHexString(), // to authenticate  logged in admin in other router
-													access,
-												}, process.env.JWT_SECRET, (err, token) => {
-															if (!err && token) return token;
-															else throw new Error(err);
-													});
+		// for current time adding extra minutes where the token will valid for
+		exp: ~~((Date.now() / 1000) + (60 * 60)), // valid only for 1hr
+		_id: admin._id.toHexString(),
+		access,
+	}, process.env.JWT_SECRET, (err, token) => {
+		if (!err && token) return token;
+		else throw new Error(err);
+	});
 
+	// pushing the token to the document
 	admin.tokens.push({access, token});
 
+	// saving token in the database and return the token
 	return admin.save().then(()=> {
 		return token;
 	});
 };
 
-/*
-* @function removeToken()
-* @param {String} token
-* @description this function can be used to remove the token from database
-* */
+/**
+ * get admin data using hashed token
+ * @param {String} token
+ * @return {Promise<*>} admin or error
+ */
+collegeAdmin.statics.findByToken = async (token) => {
+	const Admin = this;
+	let decode;
+
+	try {
+		decode = jwt.verify(token, process.env.JWT_SECRET);
+	} catch (e) {
+		return Promise.reject(e);
+	}
+
+	return await Admin.findOne({
+		"_id": decode.id,
+		"tokens.token": token,
+		"tokens.access": "auth",
+	});
+};
+
+/**
+ *
+ * @param {String} email email to find the admin
+ * @param {String} password for validation
+ * @return {Promise<admin>} if successfully check the password
+ */
+collegeAdmin.statics.findByCredentials = async (email, password) => {
+	const Admin = this;
+	const hashPsw= createHash(password);
+	return Admin.findOne({email}).then((admin) => {
+		if (!admin) {
+			// eslint-disable-next-line prefer-promise-reject-errors
+			return Promise.reject("Account is not created");
+		}
+		if (admin.password === hashPsw) {
+			return admin;
+		} else {
+			return new Error("Username or Password is incorrect");
+		}
+	});
+};
+/**
+ * Remove the generated token from the document
+ * @param {String} token
+ * @return {*}
+ */
 collegeAdmin.methods.removeToken = (token) => {
+	// remove the token from database
 	return this.update({
 		$pull: {
 			tokens: {
@@ -131,14 +181,11 @@ collegeAdmin.methods.removeToken = (token) => {
 	});
 };
 
+// hash the password before saving to the database
 collegeAdmin.pre("save", async (next) => {
 	const admin = this;
-	/* eslint-disable indent */
 	if (admin.isModified("password")) {
-		admin.password = crypto
-											.createHash("sha512")
-											.update(pwd, "utf8")
-											.digest("hex");
+		admin.password = createHash(admin.password);
 		next();
 	} else {
 		next();
