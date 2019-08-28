@@ -102,9 +102,9 @@ collegeAdmin.methods.generateAuthToken = () => {
 	const admin = this;
 	const access = "auth";
 
-	// creating the jet token
+	// create the jwt token
 	const token = jwt.sign({
-		// for current time adding extra minutes where the token will valid for
+		// expire time for the token
 		exp: ~~((Date.now() / 1000) + (60 * 60)), // valid only for 1hr
 		_id: admin._id.toHexString(),
 		access,
@@ -113,7 +113,7 @@ collegeAdmin.methods.generateAuthToken = () => {
 		else throw new Error(err);
 	});
 
-	// pushing the token to the document
+	// pushing the token to the database
 	admin.tokens.push({access, token});
 
 	// saving token in the database and return the token
@@ -123,9 +123,9 @@ collegeAdmin.methods.generateAuthToken = () => {
 };
 
 /**
- * get admin data using hashed token
+ * find the admin using provided token
  * @param {String} token
- * @return {Promise<*>} admin or error
+ * @return {Promise<admin>} admin
  */
 collegeAdmin.statics.findByToken = async (token) => {
 	const Admin = this;
@@ -146,9 +146,9 @@ collegeAdmin.statics.findByToken = async (token) => {
 
 /**
  *
- * @param {String} email email to find the admin
+ * @param {String} email to find the admin
  * @param {String} password for validation
- * @return {Promise<admin>} if successfully check the password
+ * @return {Promise<admin>} if successfully verify the password
  */
 collegeAdmin.statics.findByCredentials = async (email, password) => {
 	const Admin = this;
@@ -166,9 +166,9 @@ collegeAdmin.statics.findByCredentials = async (email, password) => {
 	});
 };
 /**
- * Remove the generated token from the document
+ * Remove the token from the database
  * @param {String} token
- * @return {*}
+ * @return {String} removed token from the database
  */
 collegeAdmin.methods.removeToken = (token) => {
 	// remove the token from database
