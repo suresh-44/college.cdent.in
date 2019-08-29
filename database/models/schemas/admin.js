@@ -98,7 +98,7 @@ const createHash = (key) => {
  * generate the jwt token for authentication
  * @return {String} token generated jwt Token is saved in database and return
  */
-collegeAdmin.methods.generateAuthToken = () => {
+collegeAdmin.methods.generateAuthToken = function() {
 	const admin = this;
 	const access = "auth";
 
@@ -127,7 +127,7 @@ collegeAdmin.methods.generateAuthToken = () => {
  * @param {String} token
  * @return {Promise<admin>} admin
  */
-collegeAdmin.statics.findByToken = async (token) => {
+collegeAdmin.statics.findByToken = async function(token) {
 	const Admin = this;
 	let decode;
 
@@ -150,7 +150,7 @@ collegeAdmin.statics.findByToken = async (token) => {
  * @param {String} password for validation
  * @return {Promise<admin>} if successfully verify the password
  */
-collegeAdmin.statics.findByCredentials = async (email, password) => {
+collegeAdmin.statics.findByCredentials = async function(email, password) {
 	const Admin = this;
 	const hashPsw= createHash(password);
 	return Admin.findOne({email}).then((admin) => {
@@ -170,7 +170,7 @@ collegeAdmin.statics.findByCredentials = async (email, password) => {
  * @param {String} token
  * @return {String} removed token from the database
  */
-collegeAdmin.methods.removeToken = (token) => {
+collegeAdmin.methods.removeToken = function(token) {
 	// remove the token from database
 	return this.update({
 		$pull: {
@@ -182,7 +182,7 @@ collegeAdmin.methods.removeToken = (token) => {
 };
 
 // hash the password before saving to the database
-collegeAdmin.pre("save", async (next) => {
+collegeAdmin.pre("save", async function(next) {
 	const admin = this;
 	if (admin.isModified("password")) {
 		admin.password = createHash(admin.password);
