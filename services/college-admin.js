@@ -15,6 +15,7 @@ exports.checkExists = async (req) => {
 	}
 	// Checking the unique String is exists in database
 	const exists = await AdminModel.exists({uniqueString});
+
 	if (!exists) {
 		throw new Error("Entry not in database.");
 	}
@@ -26,7 +27,7 @@ exports.setPassword = async (req) => {
 	const rpwd = req.body.r_password;
 
 	// recaptcha to prevent bots.
-	const response = reCaptcha(req, res);
+	const response = await reCaptcha(req);
 
 	// Checking the response
 	if (!response.data.success) {
@@ -38,24 +39,32 @@ exports.setPassword = async (req) => {
 
 		const uniqueString = req.params.uniqueString;
 		try {
-			await AdminModel.checkExists(uniqueString);
+			await AdminModel.exists({uniqueString});
 		} catch (e) {
 			throw new Error(e);
 		}
-		/* eslint-disable indent */
+
 		const query = {uniqueString};
 		const update = {
 			password: pwd,
 			accountValid: true,
-			uniqueString: 1,
+			// uniqueString: 1,
 		};
-		await AdminModel.findOneAndUpdate(query, update);
+		// find and update the password
+		AdminModel.findOne(query, (err, admin)=>{
+			if (err) return new Error(err);
+			admin.password = pwd;
+			admin.accountValid = true;
+			admin.save((err, newadmin)=> {
+				if (err) return new Error(err);
+				return newadmin;
+			});
+		});
 	}
 };
 
 // eslint-disable-next-line valid-jsdoc
 /**
- * @function login(email,  pwd)
  * @param {Object, Object} req, res
  * @param {String} req.body.email
  * @param {String} req.body.password
@@ -91,8 +100,8 @@ exports.login = async (req, res) => {
 exports.register = async (req, res) => {
 	let tempModel;
 
-	const response = reCaptcha(req, res);
-
+	const response = await reCaptcha(req, res);
+	// console.log(response);
 	if (!response.data.success) {
 		throw new Error(response.data["error-codes"]);
 	} else {
@@ -113,7 +122,7 @@ exports.register = async (req, res) => {
 				collegeWebsite: req.body.clgUrl,
 				authLetterFile: req.file.location,
 			});
-			return await tempModel.save();
+			return tempModel.save();
 		}
 	}
 };

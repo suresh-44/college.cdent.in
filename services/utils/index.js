@@ -9,18 +9,18 @@ exports.mailer = {
 			subject: subject,
 			text: body,
 		};
-		console.log(data)
+		// console.log(data)
 		transporter.sendMail(data, callback);
 	},
 };
 
-// Google reCaptcha 
-exports.reCaptcha = async (req,res) => {
+// Google reCaptcha
+exports.reCaptcha = async (req) => {
 	const recaptcha = req.body["g-recaptcha-response"];
 	const userIP =
 		req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
 	const verificationURL = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPCTHA_SECRET}&response=${recaptcha}&remoteip=${userIP}`;
 
-	return await axios.get(verificationURL);
-}
+	return axios.get(verificationURL);
+};

@@ -182,7 +182,7 @@ collegeAdmin.methods.removeToken = function(token) {
 };
 
 // hash the password before saving to the database
-collegeAdmin.pre("save", async function(next) {
+collegeAdmin.pre("save", function(next) {
 	const admin = this;
 	if (admin.isModified("password")) {
 		admin.password = createHash(admin.password);
