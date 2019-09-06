@@ -49,7 +49,7 @@ const collegeAdmin = new mongoose.Schema({
 		trim: true,
 	},
 	role: {
-		type: Array,
+		type: String,
 		required: true,
 		trim: true,
 	},
@@ -75,16 +75,6 @@ const collegeAdmin = new mongoose.Schema({
 		type: Date,
 		required: false,
 	},
-	tokens: [{
-		access: {
-			type: String,
-			required: true,
-		},
-		token: {
-			type: String,
-			required: true,
-		},
-	}],
 });
 
 const createHash = (key) => {
@@ -151,20 +141,22 @@ collegeAdmin.statics.findByToken = async function(token) {
  * @return {Promise<admin>} if successfully verify the password
  */
 collegeAdmin.statics.findByCredentials = async function(email, password) {
-	const Admin = this;
+	let admin;
 	const hashPsw= createHash(password);
-	return Admin.findOne({email}).then((admin) => {
-		if (!admin) {
-			// eslint-disable-next-line prefer-promise-reject-errors
-			return Promise.reject("Account is not created");
-		}
-		if (admin.password === hashPsw) {
-			return admin;
-		} else {
-			return new Error("Username or Password is incorrect");
-		}
-	});
+	try {
+		// eslint-disable-next-line no-mixed-spaces-and-tabs
+		 admin = await this.findOne({email});
+	} catch (e) {
+		throw new Error("Email is incorrect");
+	}
+
+	if (admin.password === hashPsw) {
+		return admin;
+	} else {
+		throw new Error("Password is incorrect");
+	}
 };
+
 /**
  * Remove the token from the database
  * @param {String} token
@@ -182,7 +174,7 @@ collegeAdmin.methods.removeToken = function(token) {
 };
 
 // hash the password before saving to the database
-collegeAdmin.pre("save", function(next) {
+collegeAdmin.pre("save").then(function() {
 	const admin = this;
 	if (admin.isModified("password")) {
 		admin.password = createHash(admin.password);

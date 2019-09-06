@@ -47,14 +47,15 @@ router.get("/account/create/:uniqueString", async (req, res) => {
 });
 
 router.post("/account/create/:uniqueString", async (req, res) => {
+
 	try {
 		await collegeAdmin.setPassword(req);
-		res.render("create_password", {success: "Successfully created the Password"});
+		res.render("login", {role: "college_admin"});
 	} catch (e) {
 		res.render("create_password", {error: e.message,
 			title: "Create Password",
 			key: process.env.RECAPCTHA_KEY,
-			uniqueString: req.params.uniqueString,});
+			uniqueString: req.params.uniqueString});
 	}
 });
 

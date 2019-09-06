@@ -1,12 +1,9 @@
-/* eslint-disable max-len */
-const crypto = require("crypto");
-
 // Database modles
 const TempModel = require("../database/models/temp-model");
 const AdminModel = require("../database/models/admin-model");
 
 // Utils
-const reCaptcha = require("./utils/index").reCaptcha;
+const Utils = require("./utils/index");
 
 exports.checkExists = async (req) => {
 	const uniqueString = req.params.uniqueString;
@@ -45,19 +42,14 @@ exports.setPassword = async (req) => {
 		}
 
 		const query = {uniqueString};
-		const update = {
-			password: pwd,
-			accountValid: true,
-			// uniqueString: 1,
-		};
 		// find and update the password
-		AdminModel.findOne(query, (err, admin)=>{
+		return AdminModel.findOne(query, (err, admin)=>{
 			if (err) return new Error(err);
 			admin.password = pwd;
 			admin.accountValid = true;
-			admin.save((err, newadmin)=> {
+			admin.save((err, newAdmin)=> {
 				if (err) return new Error(err);
-				return newadmin;
+				return newAdmin;
 			});
 		});
 	}
@@ -73,34 +65,37 @@ exports.setPassword = async (req) => {
  * @return admin data || Error
  * */
 exports.login = async (req, res) => {
+	const collegeName = req.body.collegeName;
 	const email = req.body.email;
 	const pwd = req.body.password;
-	/* eslint-disable indent */
-	const inputHash = crypto
-										.createHash("sha512")
-										.update(pwd, "utf-8")
-										.digest("hex");
-
-	const admin = await AdminModel.findOne({email});
-	return new Promise((resolve, reject)=> {
-		if (data) {
-			if (admin.password === inputHash && admin.accountValid) {
-				resolve(admin);
-			} else {
-				reject(new Error("Password is incorrect"));
-			}
+	const role = req.body.role;
+	let user;
+	// let department;
+	try {
+		if (!role) {
+			return new Error("Role is required!");
 		} else {
-			// TODO give valid response message
-			// eslint-disable-next-line no-mixed-spaces-and-tabs
- 			reject(new Error("Admin/Account is not found"));
+			if (role === "College-Admin") {
+				user = await AdminModel.findByCredentials(email, pwd);
+				await Utils.sessions(req, user);
+				res.redirect(`/${collegeName}/admin`);
+			} else if (role === "Department-Admin") {
+				// department = req.body.department;
+				//	TODO create department admin module
+			} else {
+				// TODO create Faculty module
+			}
 		}
-	});
+	} catch (e) {
+		return new Error(e.message);
+	}
+
 };
 
 exports.register = async (req, res) => {
 	let tempModel;
 
-	const response = await reCaptcha(req, res);
+	const response = await Utils.reCaptcha(req, res);
 	// console.log(response);
 	if (!response.data.success) {
 		throw new Error(response.data["error-codes"]);

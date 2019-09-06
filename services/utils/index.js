@@ -24,3 +24,17 @@ exports.reCaptcha = async (req) => {
 
 	return axios.get(verificationURL);
 };
+
+exports.sessions = async (req, user) => {
+	const browser = req.headers["user-agent"];
+	const userIP =
+		req.header("x-forwarded-for") ||
+		req.connection.remoteAddress + user.password;
+	const str = browser + userIP;
+	const secret = crypto.createHash("sha512").update(str, "utf8");
+	req.session.login = true;
+	req.session.superAdmin = true;
+	req.session.user_id = user._id;
+	req.session.username = user.name;
+	req.session.secret = secret.digest("hex");
+};
