@@ -47,7 +47,6 @@ router.get("/account/create/:uniqueString", async (req, res) => {
 });
 
 router.post("/account/create/:uniqueString", async (req, res) => {
-
 	try {
 		await collegeAdmin.setPassword(req);
 		res.render("login", {role: "college_admin"});
