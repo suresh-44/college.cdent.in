@@ -89,7 +89,6 @@ exports.login = async (req, res) => {
 	} catch (e) {
 		return new Error(e.message);
 	}
-
 };
 
 exports.register = async (req, res) => {
