@@ -77,8 +77,8 @@ exports.login = async (req, res) => {
 		} else {
 			if (role === "College-Admin") {
 				user = await AdminModel.findByCredentials(email, pwd);
-				await Utils.sessions(req, user);
-				res.redirect(`/${collegeName}/admin`);
+				await Utils.sessions(req, user, "College-Admin");
+				res.redirect(`/${collegeName}/admin/dashboard`);
 			} else if (role === "Department-Admin") {
 				// department = req.body.department;
 				//	TODO create department admin module
