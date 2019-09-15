@@ -3,7 +3,7 @@ const utils = require("./../utils");
 const mailer = require("./utils").mailer;
 
 const TempModel = require("../database/models/temp-model");
-const AdminModel = require("../database/models/admin-model");
+const AdminModel = require("../database/models/adminList-model");
 
 exports.login = async (req, res) => {
 	const inputPwdHash = crypto
@@ -61,7 +61,7 @@ exports.getCollegeData = async () => {
 	return TempModel.find({});
 };
 
-exports.removeCollege = async (req, res) => {
+exports.removeCollege = async (req) => {
 	const id = req.params.id;
 	await TempModel.findByIdAndRemove(id);
 };

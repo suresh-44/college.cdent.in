@@ -1,4 +1,6 @@
 const axios = require("axios");
+const crypto = require("crypto");
+
 const transporter = require("./mail-config");
 
 exports.mailer = {
@@ -25,7 +27,10 @@ exports.reCaptcha = async (req) => {
 	return axios.get(verificationURL);
 };
 
-exports.sessions = async (req, user, role) => {
+exports.sessions = async (req, options) => {
+	const user = options.user;
+	const role = options.role;
+
 	const browser = req.headers["user-agent"];
 	const userIP =
 		req.header("x-forwarded-for") ||
@@ -37,4 +42,11 @@ exports.sessions = async (req, user, role) => {
 	req.session.username = user.name;
 	req.session.role = role;
 	req.session.secret = secret.digest("hex");
+};
+
+exports.createHash = (key) => {
+	return crypto
+		.createHash("sha512")
+		.update(key, "utf8")
+		.digest("hex");
 };

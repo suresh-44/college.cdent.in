@@ -6,7 +6,7 @@ const upload = require("../utils/multer");
 const collegeAdmin = require("../services/college-admin");
 
 /* GET home page. */
-router.get("/", function(req, res, next) {
+router.get("/", function(req, res) {
 	res.render("index", {title: "Express"});
 });
 
@@ -55,19 +55,6 @@ router.post("/account/create/:uniqueString", async (req, res) => {
 			title: "Create Password",
 			key: process.env.RECAPCTHA_KEY,
 			uniqueString: req.params.uniqueString});
-	}
-});
-
-router.get("/admin/login", async (req, res) => {
-	// TODO load the admin login form
-	res.send("Hello for the login");
-});
-
-router.post("/admin/login", async (req, res) => {
-	try {
-		await collegeAdmin.login(req, res);
-	} catch (e) {
-
 	}
 });
 

@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-const crypto = require("crypto");
+const path = require("path");
+
+const Utils = require(path.join(__dirname, "../../../services/utils/index"));
 
 const collegeAdmin = new mongoose.Schema({
 	name: {
@@ -48,7 +50,7 @@ const collegeAdmin = new mongoose.Schema({
 		trim: true,
 	},
 	role: {
-		type: String,
+		type: Array,
 		required: true,
 		trim: true,
 	},
@@ -76,12 +78,6 @@ const collegeAdmin = new mongoose.Schema({
 	},
 });
 
-const createHash = (key) => {
-	return crypto
-		.createHash("sha512")
-		.update(key, "utf8")
-		.digest("hex");
-};
 
 /**
  *
@@ -91,7 +87,7 @@ const createHash = (key) => {
  */
 collegeAdmin.statics.findByCredentials = async function(email, password) {
 	let admin;
-	const hashPsw= createHash(password);
+	const hashPsw = Utils.createHash(password);
 	try {
 		// eslint-disable-next-line no-mixed-spaces-and-tabs
 		 admin = await this.findOne({email});
@@ -105,16 +101,5 @@ collegeAdmin.statics.findByCredentials = async function(email, password) {
 		throw new Error("Password is incorrect");
 	}
 };
-
-// hash the password before saving to the database
-collegeAdmin.pre("save").then(function() {
-	const admin = this;
-	if (admin.isModified("password")) {
-		admin.password = createHash(admin.password);
-		next();
-	} else {
-		next();
-	}
-});
 
 module.exports = collegeAdmin;

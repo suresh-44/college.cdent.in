@@ -1,6 +1,6 @@
 // Database modles
 const TempModel = require("../database/models/temp-model");
-const AdminModel = require("../database/models/admin-model");
+const AdminModel = require("../database/models/adminList-model");
 
 // Utils
 const Utils = require("./utils/index");
@@ -19,7 +19,7 @@ exports.checkExists = async (req) => {
 };
 
 // Updating password for accepted college
-exports.setPassword = async (req) => {
+exports.setPassword = async (req, res) => {
 	const pwd = req.body.password;
 	const rpwd = req.body.r_password;
 
@@ -33,35 +33,35 @@ exports.setPassword = async (req) => {
 		if (pwd !== rpwd) {
 			throw new Error("Passwords doesn't match");
 		}
-
+		// TODO Give some good responses back
 		const uniqueString = req.params.uniqueString;
 		try {
-			await AdminModel.exists({uniqueString});
-		} catch (e) {
-			throw new Error(e);
-		}
+			const exist = await AdminModel.exists({uniqueString});
+			if (!exist) return res.redirect("404");
+			const query = {uniqueString};
+			// find and update the password
+			const admin = await AdminModel.findOne(query);
+			if (!admin) return new Error("url is expired");
 
-		const query = {uniqueString};
-		// find and update the password
-		return AdminModel.findOne(query, (err, admin)=>{
-			if (err) return new Error(err);
-			admin.password = pwd;
-			admin.accountValid = true;
-			admin.save((err, newAdmin)=> {
-				if (err) return new Error(err);
-				return newAdmin;
-			});
-		});
+			// AdminModel.findByIdAndUpdate(admin.id, )
+			admin.password = Utils.createHash(pwd);
+			admin.paid = false;
+
+			// eslint-disable-next-line no-mixed-spaces-and-tabs
+			await admin.save();
+		} catch (e) {
+			return new Error(e.message);
+		}
 	}
 };
 
 // eslint-disable-next-line valid-jsdoc
 /**
  * @param {Object, Object} req, res
+ * @param res
  * @param {String} req.body.email
  * @param {String} req.body.password
- * @description check the password is correct
- *@todo if password is correct then generate a jwt token for authentication
+ * @description check the password is correct then create a new session
  * @return admin data || Error
  * */
 exports.login = async (req, res) => {
