@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const express = require("express");
 const router = express.Router();
 const upload = require("../utils/multer");
@@ -5,7 +6,7 @@ const upload = require("../utils/multer");
 const collegeAdmin = require("../services/college-admin");
 
 /* GET home page. */
-router.get("/", function(req, res, next) {
+router.get("/", function(req, res) {
 	res.render("index", {title: "Express"});
 });
 
@@ -35,35 +36,25 @@ router.post("/register", upload.single("file"), async (req, res) => {
 router.get("/account/create/:uniqueString", async (req, res) => {
 	try {
 		await collegeAdmin.checkExists(req);
-		res.render('create_password',{
+		res.render("create_password", {
 			title: "Create Password",
 			key: process.env.RECAPCTHA_KEY,
-			uniqueString : req.params.uniqueString
-		})
+			uniqueString: req.params.uniqueString,
+		});
 	} catch (e) {
-		// TODO show error, invalid link
-		res.render('404.hbs', {title:"Not Found", message : "Account is not created"})
+		res.render("404.hbs", {title: "Not Found", message: "Account is not created"});
 	}
 });
 
 router.post("/account/create/:uniqueString", async (req, res) => {
 	try {
 		await collegeAdmin.setPassword(req);
-		res.redirect("/admin/login");
+		res.render("login", {role: "college_admin"});
 	} catch (e) {
-		es.render('404.hbs', { 'message' :e.message})
-	}
-});
-
-router.get("/admin/login", async (req, res) => {
-	// TODO load the admin login form
-});
-
-router.post("/admin/login", async (req, res) => {
-	try {
-		await collegeAdmin.login(req, res);
-	} catch (e) {
-
+		res.render("create_password", {error: e.message,
+			title: "Create Password",
+			key: process.env.RECAPCTHA_KEY,
+			uniqueString: req.params.uniqueString});
 	}
 });
 

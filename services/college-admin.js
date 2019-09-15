@@ -1,105 +1,122 @@
-const crypto = require("crypto");
-
 // Database modles
 const TempModel = require("../database/models/temp-model");
-const AdminModel = require("../database/models/admin-model");
+const AdminModel = require("../database/models/adminList-model");
 
 // Utils
-const reCaptcha = require("./utils/index").reCaptcha;
+const Utils = require("./utils/index");
 
-exports.checkExists = async req => {
-  const uniqueString = req.params.uniqueString;
-  if (uniqueString === 0) {
-    throw new Error("Incorrect access.");
-  }
-  // Checking the unique String is exists in database
-  const exists = await AdminModel.exists({ uniqueString });
-  if (!exists) {
-    throw new Error("Entry not in database.");
-  }
+exports.checkExists = async (req) => {
+	const uniqueString = req.params.uniqueString;
+	if (uniqueString === 0) {
+		throw new Error("Incorrect access.");
+	}
+	// Checking the unique String is exists in database
+	const exists = await AdminModel.exists({uniqueString});
+
+	if (!exists) {
+		throw new Error("Entry not in database.");
+	}
 };
 
 // Updating password for accepted college
-exports.setPassword = async req => {
-  const pwd = req.body.password;
-  const rpwd = req.body.r_password;
+exports.setPassword = async (req, res) => {
+	const pwd = req.body.password;
+	const rpwd = req.body.r_password;
 
-  // recaptcha to prevent bots.
-  const response = reCaptcha(req, res);
+	// recaptcha to prevent bots.
+	const response = await reCaptcha(req);
 
 	// Checking the response
-  if (!response.data.success) { 
-    throw new Error(response.data["error-codes"]);
-  } else {
-    if (pwd !== rpwd) {
-      throw new Error("Passwords doesn't match");
-    }
+	if (!response.data.success) {
+		throw new Error(response.data["error-codes"]);
+	} else {
+		if (pwd !== rpwd) {
+			throw new Error("Passwords doesn't match");
+		}
+		// TODO Give some good responses back
+		const uniqueString = req.params.uniqueString;
+		try {
+			const exist = await AdminModel.exists({uniqueString});
+			if (!exist) return res.redirect("404");
+			const query = {uniqueString};
+			// find and update the password
+			const admin = await AdminModel.findOne(query);
+			if (!admin) return new Error("url is expired");
 
-    const uniqueString = req.params.uniqueString;
-    try {
-      await AdminModel.checkExists(req);
-    } catch (e) {
-      throw new Error(e);
-    }
+			// AdminModel.findByIdAndUpdate(admin.id, )
+			admin.password = Utils.createHash(pwd);
+			admin.paid = false;
 
-    const pwdHash = crypto
-      .createHash("sha512")
-      .update(pwd, "utf8")
-      .digest("hex");
-
-    const query = { uniqueString };
-    const update = {
-      password: pwdHash,
-      accountValid: true,
-      uniqueString: 1
-    };
-    await AdminModel.findOneAndUpdate(query, update);
-  }
+			// eslint-disable-next-line no-mixed-spaces-and-tabs
+			await admin.save();
+		} catch (e) {
+			return new Error(e.message);
+		}
+	}
 };
 
+// eslint-disable-next-line valid-jsdoc
+/**
+ * @param {Object, Object} req, res
+ * @param res
+ * @param {String} req.body.email
+ * @param {String} req.body.password
+ * @description check the password is correct then create a new session
+ * @return admin data || Error
+ * */
 exports.login = async (req, res) => {
-  const email = req.body.email;
-  const pwd = req.body.password;
-  const inputHash = crypto
-    .createHash("sha512")
-    .update(pwd, "utf-8")
-    .digest("hex");
-
-  // eslint-disable-next-line  no-unused-vars
-  const query = { email: email, password: inputHash };
-  // const data = await AdminModel.findOne(query);
-  // TODO check if password is correct
-  // if correct check if payment is done.
-  // if payment is done redirect to /admin/dashboard
-  // else redirect to /admin/pay
+	const collegeName = req.body.collegeName;
+	const email = req.body.email;
+	const pwd = req.body.password;
+	const role = req.body.role;
+	let user;
+	// let department;
+	try {
+		if (!role) {
+			return new Error("Role is required!");
+		} else {
+			if (role === "College-Admin") {
+				user = await AdminModel.findByCredentials(email, pwd);
+				await Utils.sessions(req, user, "College-Admin");
+				res.redirect(`/${collegeName}/admin/dashboard`);
+			} else if (role === "Department-Admin") {
+				// department = req.body.department;
+				//	TODO create department admin module
+			} else {
+				// TODO create Faculty module
+			}
+		}
+	} catch (e) {
+		return new Error(e.message);
+	}
 };
 
 exports.register = async (req, res) => {
-  let tempModel;
+	let tempModel;
 
-  const response = reCaptcha(req, res);
+	const response = await Utils.reCaptcha(req, res);
+	// console.log(response);
+	if (!response.data.success) {
+		throw new Error(response.data["error-codes"]);
+	} else {
+		const temp = await TempModel.find({
+			email: req.body.email,
+		});
 
-  if (!response.data.success) {
-    throw new Error(response.data["error-codes"]);
-  } else {
-    const temp = await TempModel.find({
-      email: req.body.email
-    });
-
-    if (temp.length > 0) {
-      throw new Error("Email address already exists");
-    } else {
-      tempModel = new TempModel({
-        name: req.body.name,
-        email: req.body.email,
-        role: req.body.role,
-        phone_no: req.body.phone_no,
-        collegeName: req.body.clgName,
-        collegeAddr: req.body.clgAddr,
-        collegeWebsite: req.body.clgUrl,
-        authLetterFile: req.file.location
-      });
-      return await tempModel.save();
-    }
-  }
+		if (temp.length > 0) {
+			throw new Error("Email address already exists");
+		} else {
+			tempModel = new TempModel({
+				name: req.body.name,
+				email: req.body.email,
+				role: req.body.role,
+				phone_no: req.body.phone_no,
+				collegeName: req.body.clgName,
+				collegeAddr: req.body.clgAddr,
+				collegeWebsite: req.body.clgUrl,
+				authLetterFile: req.file.location,
+			});
+			return tempModel.save();
+		}
+	}
 };
