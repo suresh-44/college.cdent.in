@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const admin = require("./schemas/admin");
+const adminListModel = require("./schemas/adminList");
 
 const collegeDB = mongoose.connection.useDb("adminList");
-const AdminListModel = collegeDB.model("adminModel", admin);
+const AdminListModel = collegeDB.model("adminListModel", adminListModel);
 
 module.exports = AdminListModel;

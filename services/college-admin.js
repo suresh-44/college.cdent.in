@@ -1,6 +1,7 @@
 // Database modles
 const TempModel = require("../database/models/temp-model");
-const AdminModel = require("../database/models/adminList-model");
+const AdminModelList = require("../database/models/adminList-model");
+const college= require("../database/models/college");
 
 // Utils
 const Utils = require("./utils/index");
@@ -11,7 +12,7 @@ exports.checkExists = async (req) => {
 		throw new Error("Incorrect access.");
 	}
 	// Checking the unique String is exists in database
-	const exists = await AdminModel.exists({uniqueString});
+	const exists = await AdminModelList.exists({uniqueString});
 
 	if (!exists) {
 		throw new Error("Entry not in database.");
@@ -36,14 +37,14 @@ exports.setPassword = async (req, res) => {
 		// TODO Give some good responses back
 		const uniqueString = req.params.uniqueString;
 		try {
-			const exist = await AdminModel.exists({uniqueString});
+			const exist = await AdminModelList.exists({uniqueString});
 			if (!exist) return res.redirect("404");
 			const query = {uniqueString};
 			// find and update the password
-			const admin = await AdminModel.findOne(query);
+			const admin = await AdminModelList.findOne(query);
 			if (!admin) return new Error("url is expired");
 
-			// AdminModel.findByIdAndUpdate(admin.id, )
+			// AdminModelList.findByIdAndUpdate(admin.id, )
 			admin.password = Utils.createHash(pwd);
 			admin.paid = false;
 
@@ -59,24 +60,26 @@ exports.setPassword = async (req, res) => {
 /**
  * @param {Object, Object} req, res
  * @param res
+ * @param collegeName
  * @param {String} req.body.email
  * @param {String} req.body.password
  * @description check the password is correct then create a new session
  * @return admin data || Error
  * */
-exports.login = async (req, res) => {
-	const collegeName = req.body.collegeName;
+exports.login = async (req, res, collegeDB) => {
 	const email = req.body.email;
 	const pwd = req.body.password;
 	const role = req.body.role;
-	let user;
+
+	let user, model;
 	// let department;
 	try {
 		if (!role) {
 			return new Error("Role is required!");
 		} else {
-			if (role === "College-Admin") {
-				user = await AdminModel.findByCredentials(email, pwd);
+			if (role === "College_Admin") {
+				model = await college.getCollegeAdminModel(collegeDB);
+				user = await AdminModelList.findByCredentials(email, pwd);
 				await Utils.sessions(req, user, "College-Admin");
 				res.redirect(`/${collegeName}/admin/dashboard`);
 			} else if (role === "Department-Admin") {
