@@ -8,7 +8,7 @@ module.exports.getcollege = (DB_NAME) => {
 };
 
 module.exports.getCollegeAdminModel = async (DB_NAME) => {
-	return DB_NAME.model("collegeAdmin", collegeAdminSchema,"collegeAdmin");
+	return DB_NAME.model("collegeAdmin", collegeAdminSchema, "collegeAdmin");
 };
 
 // Todo create the others schema

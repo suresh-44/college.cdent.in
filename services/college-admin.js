@@ -26,12 +26,12 @@ exports.setPassword = async (req, res) => {
 	const shortName = req.body.short_name;
 	// const
 	// recaptcha to prevent bots.
-	// const response = await reCaptcha(req);
+	const response = await reCaptcha(req);
 
 	// Checking the response
-	// if (!response.data.success) {
-	// 	throw new Error(response.data["error-codes"]);
-	// } else {
+	if (!response.data.success) {
+		throw new Error(response.data["error-codes"]);
+	} else {
 		if (pwd !== rpwd) {
 			throw new Error("Passwords doesn't match");
 		}
@@ -45,39 +45,34 @@ exports.setPassword = async (req, res) => {
 			const admin = await AdminModelList.findOne(query);
 			if (!admin) return new Error("url is expired");
 			const collegeDB = college.getcollege(shortName);
-			const collegeAdmin = college.getCollegeAdminModel(collegeDB);
+			const collegeAdmin = await college.getCollegeAdminModel(collegeDB);
 			// AdminModelList.findByIdAndUpdate(admin.id, )
 			admin.password = Utils.createHash(pwd);
 			admin.paid = false;
 			admin.shortName = shortName;
+			admin.uniqueString = 1;
 			const newAdmin = {
-				"role" : admin.role,
-				"name" : admin.name,
-				"email" : admin.email,
-				"phone_no" : admin.phone_no,
-				"collegeName" : admin.collegeName,
-				"collegeAddr" : admin.collegeAddr,
-				"collegeWebsite" : admin.collegeWebsite,
-				"authLetterFile" : admin.authLetterFile,
-				"accountValid" : false,
-				"paid" : false,
-				shortName
+				role: admin.role,
+				name: admin.name,
+				email: admin.email,
+				phone_no: admin.phone_no,
+				collegeName: admin.collegeName,
+				collegeAddr: admin.collegeAddr,
+				collegeWebsite: admin.collegeWebsite,
+				authLetterFile: admin.authLetterFile,
+				accountValid: false,
+				paid: false,
+				password: Utils.createHash(pwd),
+				shortName,
 			};
-			// eslint-disable-next-line no-mixed-spaces-and-tabs,new-cap
-			new collegeAdmin(newAdmin).save().then(user=> console.log(user)).catch(err=>console.log(err));
-			// console.log(newAdmins);
-			// res.send({newAdmins});
-			// collegeAdmin.create(newAdmin,  (err,user)=>{
-			// 	if(err) {
-			// 		console.log(err);
-			// 	} else {
-			// 		console.log(user);
-			// 	}
-			// })
+			// eslint-disable-next-line no-mixed-spaces-and-tabs,new-cap,max-len
+			await admin.save();
+			// eslint-disable-next-line new-cap,max-len
+			new collegeAdmin(newAdmin).save().then((user) => console.log(user)).catch((err)=> new Error(err));
 		} catch (e) {
 			return new Error(e.message);
 		}
-	// }
+	}
 };
 
 // eslint-disable-next-line valid-jsdoc

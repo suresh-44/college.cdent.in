@@ -51,7 +51,7 @@ router.post("/account/create/:uniqueString", async (req, res) => {
 	try {
 		await collegeAdminList.setPassword(req);
 		// res.render("login", {role: "college_admin"});
-		res.send({msg: "successfully created the password"});
+		res.render("login", {msg: "successfully created the password"});
 	} catch (e) {
 		res.render("create_password", {error: e.message,
 			title: "Create Password",

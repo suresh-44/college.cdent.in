@@ -22,7 +22,7 @@ const collegeAdminSchema = new mongoose.Schema({
 	},
 	password: {
 		type: String,
-		required: false,
+		required: true,
 		unique: true,
 	},
 	collegeName: {
