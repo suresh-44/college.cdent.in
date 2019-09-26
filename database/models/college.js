@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 // eslint-disable-next-line no-unused-vars
-const collegeAdminSchema = require("./schemas/adminList");
+const collegeAdminSchema = require("./schemas/college-admin");
 
 module.exports.getcollege = (DB_NAME) => {
 	// console.log(DB_NAME);
@@ -8,7 +8,7 @@ module.exports.getcollege = (DB_NAME) => {
 };
 
 module.exports.getCollegeAdminModel = async (DB_NAME) => {
-	return DB_NAME.model("collegeAdmin", collegeAdminSchema);
+	return DB_NAME.model("collegeAdmin", collegeAdminSchema,"collegeAdmin");
 };
 
 // Todo create the others schema

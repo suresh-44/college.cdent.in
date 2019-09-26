@@ -23,14 +23,15 @@ exports.checkExists = async (req) => {
 exports.setPassword = async (req, res) => {
 	const pwd = req.body.password;
 	const rpwd = req.body.r_password;
-
+	const shortName = req.body.short_name;
+	// const
 	// recaptcha to prevent bots.
-	const response = await reCaptcha(req);
+	// const response = await reCaptcha(req);
 
 	// Checking the response
-	if (!response.data.success) {
-		throw new Error(response.data["error-codes"]);
-	} else {
+	// if (!response.data.success) {
+	// 	throw new Error(response.data["error-codes"]);
+	// } else {
 		if (pwd !== rpwd) {
 			throw new Error("Passwords doesn't match");
 		}
@@ -43,24 +44,47 @@ exports.setPassword = async (req, res) => {
 			// find and update the password
 			const admin = await AdminModelList.findOne(query);
 			if (!admin) return new Error("url is expired");
-
+			const collegeDB = college.getcollege(shortName);
+			const collegeAdmin = college.getCollegeAdminModel(collegeDB);
 			// AdminModelList.findByIdAndUpdate(admin.id, )
 			admin.password = Utils.createHash(pwd);
 			admin.paid = false;
-
-			// eslint-disable-next-line no-mixed-spaces-and-tabs
-			await admin.save();
+			admin.shortName = shortName;
+			const newAdmin = {
+				"role" : admin.role,
+				"name" : admin.name,
+				"email" : admin.email,
+				"phone_no" : admin.phone_no,
+				"collegeName" : admin.collegeName,
+				"collegeAddr" : admin.collegeAddr,
+				"collegeWebsite" : admin.collegeWebsite,
+				"authLetterFile" : admin.authLetterFile,
+				"accountValid" : false,
+				"paid" : false,
+				shortName
+			};
+			// eslint-disable-next-line no-mixed-spaces-and-tabs,new-cap
+			new collegeAdmin(newAdmin).save().then(user=> console.log(user)).catch(err=>console.log(err));
+			// console.log(newAdmins);
+			// res.send({newAdmins});
+			// collegeAdmin.create(newAdmin,  (err,user)=>{
+			// 	if(err) {
+			// 		console.log(err);
+			// 	} else {
+			// 		console.log(user);
+			// 	}
+			// })
 		} catch (e) {
 			return new Error(e.message);
 		}
-	}
+	// }
 };
 
 // eslint-disable-next-line valid-jsdoc
 /**
  * @param {Object, Object} req, res
  * @param res
- * @param collegeName
+ * @param collegeDB
  * @param {String} req.body.email
  * @param {String} req.body.password
  * @description check the password is correct then create a new session
@@ -71,15 +95,16 @@ exports.login = async (req, res, collegeDB) => {
 	const pwd = req.body.password;
 	const role = req.body.role;
 
-	let user, model;
+	let user;
+	let MODEL;
 	// let department;
 	try {
 		if (!role) {
 			return new Error("Role is required!");
 		} else {
 			if (role === "College_Admin") {
-				model = await college.getCollegeAdminModel(collegeDB);
-				user = await AdminModelList.findByCredentials(email, pwd);
+				MODEL = await college.getCollegeAdminModel(collegeDB);
+				user = await MODEL.findByCredentials(email, pwd);
 				await Utils.sessions(req, user, "College-Admin");
 				res.redirect(`/${collegeName}/admin/dashboard`);
 			} else if (role === "Department-Admin") {

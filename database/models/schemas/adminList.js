@@ -76,11 +76,6 @@ const collegeAdminList = new mongoose.Schema({
 		type: Date,
 		required: false,
 	},
-	shortHand_Name: {
-		type: String,
-		required: true,
-		trim: true,
-	},
 });
 
 

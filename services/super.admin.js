@@ -69,7 +69,7 @@ exports.removeCollege = async (req) => {
 exports.acceptCollege = async (collegeID) => {
 	// GET old data
 	const data = await TempModel.findById(collegeID);
-	console.log(data);
+	// console.log(data);
 	// && Generate a link to send as email
 	const uniqueString = utils.randomString(16);
 	const link =
@@ -90,17 +90,17 @@ exports.acceptCollege = async (collegeID) => {
 	});
 
 	const admin = await adminModel.save();
-
-	const body = `Dear ${
-		admin.name
-	}, ${"<br>"}Your College is accepted. Activate your account at ${link}	`;
-
-	mailer.sendTextMail(
-		data.email,
-		"Account accepted. Activation required",
-		body,
-		(msg) => {
-			console.log(msg);
-		}
-	);
+	console.log(admin);
+	// const body = `Dear ${
+	// 	admin.name
+	// }, ${"<br>"}Your College is accepted. Activate your account at ${link}	`;
+	//
+	// mailer.sendTextMail(
+	// 	data.email,
+	// 	"Account accepted. Activation required",
+	// 	body,
+	// 	(msg) => {
+	// 		console.log(msg);
+	// 	}
+	// );
 };
