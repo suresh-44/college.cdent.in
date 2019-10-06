@@ -50,7 +50,6 @@ router.get("/account/create/:uniqueString", async (req, res) => {
 router.post("/account/create/:uniqueString", async (req, res) => {
 	try {
 		await collegeAdminList.setPassword(req);
-		// res.render("login", {role: "college_admin"});
 		res.render("login", {msg: "successfully created the password"});
 	} catch (e) {
 		res.render("create_password", {error: e.message,
@@ -60,8 +59,9 @@ router.post("/account/create/:uniqueString", async (req, res) => {
 	}
 });
 
+// College dashboard starts here
 router.get("/:college_name", async (req, res)=> {
-	res.render("login", {colleg: req.params.college_name});
+	res.render("login", {college: req.params.college_name});
 });
 
 router.post(":/college_name", async (req, res) => {
@@ -72,12 +72,6 @@ router.post(":/college_name", async (req, res) => {
 	} catch (e) {
 	//	Todo Work on catch function
 	}
-});
-
-// TODO have to block /favicon.ico
-router.get("/favicon.ico", function(req, res) {
-	console.log("+++++================This is getting");
-	res.sendStatus(204);
 });
 
 module.exports = router;

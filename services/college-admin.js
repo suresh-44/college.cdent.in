@@ -24,11 +24,11 @@ exports.setPassword = async (req, res) => {
 	const pwd = req.body.password;
 	const rpwd = req.body.r_password;
 	const shortName = req.body.short_name;
-	// const
+
 	// recaptcha to prevent bots.
 	const response = await reCaptcha(req);
 
-	// Checking the response
+	// // Checking the response
 	if (!response.data.success) {
 		throw new Error(response.data["error-codes"]);
 	} else {

@@ -91,16 +91,16 @@ exports.acceptCollege = async (collegeID) => {
 
 	const admin = await adminModel.save();
 	console.log(admin);
-	// const body = `Dear ${
-	// 	admin.name
-	// }, ${"<br>"}Your College is accepted. Activate your account at ${link}	`;
-	//
-	// mailer.sendTextMail(
-	// 	data.email,
-	// 	"Account accepted. Activation required",
-	// 	body,
-	// 	(msg) => {
-	// 		console.log(msg);
-	// 	}
-	// );
+	const body = `Dear ${
+		admin.name
+	}, ${"<br>"}Your College is accepted. Activate your account at ${link}	`;
+
+	mailer.sendTextMail(
+		data.email,
+		"Account accepted. Activation required",
+		body,
+		(msg) => {
+			console.log(msg);
+		}
+	);
 };
