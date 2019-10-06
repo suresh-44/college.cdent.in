@@ -64,12 +64,14 @@ router.get("/:college_name", async (req, res)=> {
 	res.render("login", {college: req.params.college_name});
 });
 
-router.post(":/college_name", async (req, res) => {
+router.post("/:college_name", async (req, res) => {
 	const collegeName = req.params.college_name;
 	const collegeDB = college.getcollege(collegeName);
 	try {
 		await collegeAdminList.login(req, res, collegeDB);
+		res.send({msg: "Your an admin"});
 	} catch (e) {
+		res.status(401).send({error: e.message});
 	//	Todo Work on catch function
 	}
 });

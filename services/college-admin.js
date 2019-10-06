@@ -70,7 +70,7 @@ exports.setPassword = async (req, res) => {
 			// eslint-disable-next-line new-cap,max-len
 			new collegeAdmin(newAdmin).save().then((user) => console.log(user)).catch((err)=> new Error(err));
 		} catch (e) {
-			return new Error(e.message);
+			throw new Error(e.message);
 		}
 	}
 };
@@ -89,28 +89,29 @@ exports.login = async (req, res, collegeDB) => {
 	const email = req.body.email;
 	const pwd = req.body.password;
 	const role = req.body.role;
-
+	console.log(pwd);
 	let user;
 	let MODEL;
 	// let department;
-	try {
-		if (!role) {
-			return new Error("Role is required!");
-		} else {
-			if (role === "College_Admin") {
+
+	if (!role) {
+		throw new Error("Role is required!");
+		// res.send("role is undefined");
+	} else {
+		try {
+			if (role === "college_admin") {
 				MODEL = await college.getCollegeAdminModel(collegeDB);
 				user = await MODEL.findByCredentials(email, pwd);
 				await Utils.sessions(req, user, "College-Admin");
-				res.redirect(`/${collegeName}/admin/dashboard`);
 			} else if (role === "Department-Admin") {
 				// department = req.body.department;
 				//	TODO create department admin module
 			} else {
 				// TODO create Faculty module
 			}
+		} catch (e) {
+			throw new Error(e.message);
 		}
-	} catch (e) {
-		return new Error(e.message);
 	}
 };
 
