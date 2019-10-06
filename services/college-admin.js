@@ -8,14 +8,15 @@ const Utils = require("./utils/index");
 
 exports.checkExists = async (req) => {
 	const uniqueString = req.params.uniqueString;
-	if (uniqueString === 0) {
+	console.log(uniqueString);
+	if (!uniqueString) {
 		throw new Error("Incorrect access.");
 	}
 	// Checking the unique String is exists in database
 	const exists = await AdminModelList.exists({uniqueString});
-
+	console.log(exists);
 	if (!exists) {
-		throw new Error("Entry not in database.");
+		throw new Error("Invalid access");
 	}
 };
 
@@ -23,10 +24,10 @@ exports.checkExists = async (req) => {
 exports.setPassword = async (req, res) => {
 	const pwd = req.body.password;
 	const rpwd = req.body.r_password;
-	const shortName = req.body.short_name;
+	const shortName = req.body.short_name || "vvce";
 
 	// recaptcha to prevent bots.
-	const response = await reCaptcha(req);
+	const response = await Utils.reCaptcha(req);
 
 	// // Checking the response
 	if (!response.data.success) {
@@ -39,18 +40,18 @@ exports.setPassword = async (req, res) => {
 		const uniqueString = req.params.uniqueString;
 		try {
 			const exist = await AdminModelList.exists({uniqueString});
-			if (!exist) return res.redirect("404");
-			const query = {uniqueString};
+			if (!exist) throw new Error("Invalid access");
+
 			// find and update the password
-			const admin = await AdminModelList.findOne(query);
-			if (!admin) return new Error("url is expired");
+			const admin = await AdminModelList.findOne({uniqueString});
+
 			const collegeDB = college.getcollege(shortName);
 			const collegeAdmin = await college.getCollegeAdminModel(collegeDB);
-			// AdminModelList.findByIdAndUpdate(admin.id, )
+
 			admin.password = Utils.createHash(pwd);
 			admin.paid = false;
 			admin.shortName = shortName;
-			admin.uniqueString = 1;
+			// admin.uniqueString = 1;
 			const newAdmin = {
 				role: admin.role,
 				name: admin.name,
@@ -68,7 +69,7 @@ exports.setPassword = async (req, res) => {
 			// eslint-disable-next-line no-mixed-spaces-and-tabs,new-cap,max-len
 			await admin.save();
 			// eslint-disable-next-line new-cap,max-len
-			new collegeAdmin(newAdmin).save().then((user) => console.log(user)).catch((err)=> new Error(err));
+			await new collegeAdmin(newAdmin).save();
 		} catch (e) {
 			throw new Error(e.message);
 		}
