@@ -1,3 +1,4 @@
+/* eslint-disable new-cap */
 // Database modles
 const TempModel = require("../database/models/temp-model");
 const AdminModelList = require("../database/models/adminList-model");
@@ -24,7 +25,7 @@ exports.checkExists = async (req) => {
 exports.setPassword = async (req, res) => {
 	const pwd = req.body.password;
 	const rpwd = req.body.r_password;
-	const shortName = req.body.short_name || "vvce";
+	const shortName = req.body.short_name;
 
 	// recaptcha to prevent bots.
 	const response = await Utils.reCaptcha(req);
@@ -44,9 +45,6 @@ exports.setPassword = async (req, res) => {
 
 			// find and update the password
 			const admin = await AdminModelList.findOne({uniqueString});
-
-			const collegeDB = college.getcollege(shortName);
-			const collegeAdmin = await college.getCollegeAdminModel(collegeDB);
 
 			admin.password = Utils.createHash(pwd);
 			admin.paid = false;
@@ -69,6 +67,10 @@ exports.setPassword = async (req, res) => {
 			// eslint-disable-next-line no-mixed-spaces-and-tabs,new-cap,max-len
 			await admin.save();
 			// eslint-disable-next-line new-cap,max-len
+
+			const collegeDB = await college.getcollege(shortName);
+			const collegeAdmin = await college.getCollegeAdminModel(collegeDB);
+
 			await new collegeAdmin(newAdmin).save();
 		} catch (e) {
 			throw new Error(e.message);

@@ -8,7 +8,7 @@ const collegeAdminList = require("../services/college-admin");
 const college = require("../database/models/college");
 /* GET home page. */
 router.get("/", function(req, res) {
-	res.render("index", {title: "Express"});
+	res.render("login", {title: "Express", layout: false});
 });
 
 router.get("/register", (req, res) => {
@@ -61,13 +61,19 @@ router.post("/account/create/:uniqueString", async (req, res) => {
 
 // College dashboard starts here
 router.get("/:college_name", async (req, res)=> {
-	res.render("login", {college: req.params.college_name});
+	try {
+		await college.getcollege(req.params.college_name);
+		res.render("login", {college: req.params.college_name});
+	} catch (e) {
+		res.render("404", {message: e.message});
+	}
 });
 
 router.post("/:college_name", async (req, res) => {
 	const collegeName = req.params.college_name;
-	const collegeDB = college.getcollege(collegeName);
+
 	try {
+		const collegeDB = await college.getcollege(collegeName);
 		await collegeAdminList.login(req, res, collegeDB);
 		res.send({msg: "Your an admin"});
 	} catch (e) {

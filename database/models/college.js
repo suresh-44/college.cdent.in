@@ -1,9 +1,12 @@
 const mongoose = require("mongoose");
 // eslint-disable-next-line no-unused-vars
+const collegeAdminList = require("./adminList-model");
 const collegeAdminSchema = require("./schemas/college-admin");
 
-module.exports.getcollege = (DB_NAME) => {
+module.exports.getcollege = async (DB_NAME) => {
 	// console.log(DB_NAME);
+	const exist = await collegeAdminList.exists({shortName: DB_NAME});
+	if (!exist) throw new Error("Invalid access");
 	return mongoose.connection.useDb(DB_NAME);
 };
 
