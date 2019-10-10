@@ -91,30 +91,22 @@ exports.setPassword = async (req, res) => {
 exports.login = async (req, res, collegeDB) => {
 	const email = req.body.email;
 	const pwd = req.body.password;
-	const role = req.body.role;
-	console.log(pwd);
+
+	// console.log(pwd);
 	let user;
 	let MODEL;
+	let exist;
 	// let department;
 
-	if (!role) {
-		throw new Error("Role is required!");
-		// res.send("role is undefined");
-	} else {
-		try {
-			if (role === "college_admin") {
-				MODEL = await college.getCollegeAdminModel(collegeDB);
-				user = await MODEL.findByCredentials(email, pwd);
-				await Utils.sessions(req, user, "College-Admin");
-			} else if (role === "Department-Admin") {
-				// department = req.body.department;
-				//	TODO create department admin module
-			} else {
-				// TODO create Faculty module
-			}
-		} catch (e) {
-			throw new Error(e.message);
+	try {
+		MODEL = await college.getCollegeAdminModel(collegeDB);
+		exist = await MODEL.exists({email});
+		if (exist) {
+			user = await MODEL.findByCredentials(email, pwd);
+			await Utils.sessions(req, user);
 		}
+	} catch (e) {
+		throw new Error(e.message);
 	}
 };
 

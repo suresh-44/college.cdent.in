@@ -61,9 +61,10 @@ router.post("/account/create/:uniqueString", async (req, res) => {
 
 // College dashboard starts here
 router.get("/:college_name", async (req, res)=> {
+	const collegeName = req.params.college_name;
 	try {
-		await college.getcollege(req.params.college_name);
-		res.render("login", {college: req.params.college_name});
+		await college.getcollege(collegeName);
+		res.render("login", {college: collegeName, layout: false});
 	} catch (e) {
 		res.render("404", {message: e.message});
 	}
@@ -77,7 +78,13 @@ router.post("/:college_name", async (req, res) => {
 		await collegeAdminList.login(req, res, collegeDB);
 		res.send({msg: "Your an admin"});
 	} catch (e) {
-		res.status(401).send({error: e.message});
+		// res.status(401).send({error: e.message});
+		res.render("login", {
+			college: collegeName,
+			errMsg: e.message,
+			email: req.body.email,
+			layout: false,
+		});
 	//	Todo Work on catch function
 	}
 });

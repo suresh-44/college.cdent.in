@@ -82,6 +82,7 @@ collegeAdminSchema.statics.findByCredentials = async function(email, password) {
 	const hashPsw = Utils.createHash(password);
 
 	const admin = await this.findOne({email});
+
 	if (!admin) {
 		throw new Error("Email is incorrect");
 	} else {
