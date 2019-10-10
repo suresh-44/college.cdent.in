@@ -49,7 +49,7 @@ router.get("/account/create/:uniqueString", async (req, res) => {
 router.post("/account/create/:uniqueString", async (req, res) => {
 	try {
 		await collegeAdmin.setPassword(req);
-		res.redirect("/admin/login");
+		res.redirect("/admin/login?success");
 	} catch (e) {
 		es.render('404.hbs', { 'message' :e.message})
 	}

@@ -28,7 +28,7 @@ exports.setPassword = async req => {
   const response = reCaptcha(req, res);
 
 	// Checking the response
-  if (!response.data.success) { 
+  if (!response.data.success) {
     throw new Error(response.data["error-codes"]);
   } else {
     if (pwd !== rpwd) {
@@ -66,7 +66,7 @@ exports.login = async (req, res) => {
     .digest("hex");
 
   // eslint-disable-next-line  no-unused-vars
-  const query = { email: email, password: inputHash };
+  const query = {email, password: inputHash};
   // const data = await AdminModel.findOne(query);
   // TODO check if password is correct
   // if correct check if payment is done.
