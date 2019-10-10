@@ -1,11 +1,13 @@
+/* eslint-disable max-len */
 const express = require("express");
 const router = express.Router();
 const upload = require("../utils/multer");
 
-const collegeAdmin = require("../services/college-admin");
-
+// Todo change the collegeAdminList to proper name
+const collegeAdminList = require("../services/college-admin");
+const college = require("../database/models/college");
 /* GET home page. */
-router.get("/", function(req, res, next) {
+router.get("/", function(req, res) {
 	res.render("index", {title: "Express"});
 });
 
@@ -17,7 +19,7 @@ router.post("/register", upload.single("file"), async (req, res) => {
 	const rVal = {};
 
 	try {
-		await collegeAdmin.register(req, res);
+		await collegeAdminList.register(req, res);
 		rVal.message = "Registration is Done Successful";
 		rVal.code = 200;
 	} catch (error) {
@@ -34,36 +36,43 @@ router.post("/register", upload.single("file"), async (req, res) => {
 
 router.get("/account/create/:uniqueString", async (req, res) => {
 	try {
-		await collegeAdmin.checkExists(req);
-		res.render('create_password',{
+		await collegeAdminList.checkExists(req);
+		res.render("create_password", {
 			title: "Create Password",
 			key: process.env.RECAPCTHA_KEY,
-			uniqueString : req.params.uniqueString
-		})
+			uniqueString: req.params.uniqueString,
+		});
 	} catch (e) {
-		// TODO show error, invalid link
-		res.render('404.hbs', {title:"Not Found", message : "Account is not created"})
+		res.render("404.hbs", {message: e.message});
 	}
 });
 
 router.post("/account/create/:uniqueString", async (req, res) => {
 	try {
-		await collegeAdmin.setPassword(req);
-		res.redirect("/admin/login?success");
+		await collegeAdminList.setPassword(req, res);
+		res.render("login", {message: "successfully created the password"});
 	} catch (e) {
-		es.render('404.hbs', { 'message' :e.message})
+		res.render("create_password", {error: e.message,
+			title: "Create Password",
+			key: process.env.RECAPCTHA_KEY,
+			uniqueString: req.params.uniqueString});
 	}
 });
 
-router.get("/admin/login", async (req, res) => {
-	// TODO load the admin login form
+// College dashboard starts here
+router.get("/:college_name", async (req, res)=> {
+	res.render("login", {college: req.params.college_name});
 });
 
-router.post("/admin/login", async (req, res) => {
+router.post("/:college_name", async (req, res) => {
+	const collegeName = req.params.college_name;
+	const collegeDB = college.getcollege(collegeName);
 	try {
-		await collegeAdmin.login(req, res);
+		await collegeAdminList.login(req, res, collegeDB);
+		res.send({msg: "Your an admin"});
 	} catch (e) {
-
+		res.status(401).send({error: e.message});
+	//	Todo Work on catch function
 	}
 });
 

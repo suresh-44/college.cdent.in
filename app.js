@@ -20,21 +20,6 @@ const app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
-// hbs.registerHelper("each", (items, options) => {
-// 	let out = "";
-// 	for (let i = 0, l = items.length; i < l; i++) {
-// 		out += options.fn(items[i]);
-// 	}
-// 	return out;
-// });
-
-// hbs.registerHelper("isEqual", (arg, options)=> {
-// 	console.log(arg.code)
-// 	if(arg.code === 200) {
-// 		return options.fn(arg)
-// 	}
-// 	return options.inverse(arg);
-// })
 registerHelper(hbs);
 hbs.registerPartials(__dirname + "/views/partials");
 
@@ -67,13 +52,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/", indexRouter);
 app.use("/super/admin", superAdminRouter);
 
+
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
 	next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function(err, req, res) {
 	// set locals, only providing error in development
 	res.locals.message = err.message;
 	res.locals.error = req.app.get("env") === "development" ? err : {};

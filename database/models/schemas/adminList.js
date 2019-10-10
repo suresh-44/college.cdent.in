@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+const path = require("path");
 
-const collegeAdmin = new mongoose.Schema({
+const Utils = require(path.join(__dirname, "../../../services/utils/index"));
+
+const collegeAdminList = new mongoose.Schema({
 	name: {
 		type: String,
 		required: true,
@@ -47,7 +50,7 @@ const collegeAdmin = new mongoose.Schema({
 		trim: true,
 	},
 	role: {
-		type: String,
+		type: Array,
 		required: true,
 		trim: true,
 	},
@@ -75,4 +78,28 @@ const collegeAdmin = new mongoose.Schema({
 	},
 });
 
-module.exports = collegeAdmin;
+
+/**
+ *
+ * @param {String} email to find the admin
+ * @param {String} password for validation
+ * @return {Promise<admin>} if successfully verify the password
+ */
+collegeAdminList.statics.findByCredentials = async function(email, password) {
+	let admin;
+	const hashPsw = Utils.createHash(password);
+	try {
+		// eslint-disable-next-line no-mixed-spaces-and-tabs
+		 admin = await this.findOne({email});
+	} catch (e) {
+		throw new Error("Email is incorrect");
+	}
+
+	if (admin.password === hashPsw) {
+		return admin;
+	} else {
+		throw new Error("Password is incorrect");
+	}
+};
+
+module.exports = collegeAdminList;

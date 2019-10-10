@@ -7,7 +7,8 @@
     "csslint": "csslint public/css/**",
     "eslint": "eslint . --fix",
     "pretest": "npm run csslint && npm run eslint",
-    "test": "mocha ./tests --recursive"
+    "test": "mocha ./tests --recursive",
+    "nodemon": "nodemon"
   },
   "dependencies": {
     "aws-sdk": "^2.496.0",
