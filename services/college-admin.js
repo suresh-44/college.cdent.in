@@ -1,20 +1,22 @@
 // Database modles
 const TempModel = require("../database/models/temp-model");
-const AdminModel = require("../database/models/adminList-model");
+const AdminModelList = require("../database/models/adminList-model");
+const college= require("../database/models/college");
 
 // Utils
 const Utils = require("./utils/index");
 
 exports.checkExists = async (req) => {
 	const uniqueString = req.params.uniqueString;
-	if (uniqueString === 0) {
+	console.log(uniqueString);
+	if (!uniqueString) {
 		throw new Error("Incorrect access.");
 	}
 	// Checking the unique String is exists in database
-	const exists = await AdminModel.exists({uniqueString});
-
+	const exists = await AdminModelList.exists({uniqueString});
+	console.log(exists);
 	if (!exists) {
-		throw new Error("Entry not in database.");
+		throw new Error("Invalid access");
 	}
 };
 
@@ -22,11 +24,12 @@ exports.checkExists = async (req) => {
 exports.setPassword = async (req, res) => {
 	const pwd = req.body.password;
 	const rpwd = req.body.r_password;
+	const shortName = req.body.short_name || "vvce";
 
 	// recaptcha to prevent bots.
-	const response = await reCaptcha(req);
+	const response = await Utils.reCaptcha(req);
 
-	// Checking the response
+	// // Checking the response
 	if (!response.data.success) {
 		throw new Error(response.data["error-codes"]);
 	} else {
@@ -36,21 +39,39 @@ exports.setPassword = async (req, res) => {
 		// TODO Give some good responses back
 		const uniqueString = req.params.uniqueString;
 		try {
-			const exist = await AdminModel.exists({uniqueString});
-			if (!exist) return res.redirect("404");
-			const query = {uniqueString};
-			// find and update the password
-			const admin = await AdminModel.findOne(query);
-			if (!admin) return new Error("url is expired");
+			const exist = await AdminModelList.exists({uniqueString});
+			if (!exist) throw new Error("Invalid access");
 
-			// AdminModel.findByIdAndUpdate(admin.id, )
+			// find and update the password
+			const admin = await AdminModelList.findOne({uniqueString});
+
+			const collegeDB = college.getcollege(shortName);
+			const collegeAdmin = await college.getCollegeAdminModel(collegeDB);
+
 			admin.password = Utils.createHash(pwd);
 			admin.paid = false;
-
-			// eslint-disable-next-line no-mixed-spaces-and-tabs
+			admin.shortName = shortName;
+			// admin.uniqueString = 1;
+			const newAdmin = {
+				role: admin.role,
+				name: admin.name,
+				email: admin.email,
+				phone_no: admin.phone_no,
+				collegeName: admin.collegeName,
+				collegeAddr: admin.collegeAddr,
+				collegeWebsite: admin.collegeWebsite,
+				authLetterFile: admin.authLetterFile,
+				accountValid: false,
+				paid: false,
+				password: Utils.createHash(pwd),
+				shortName,
+			};
+			// eslint-disable-next-line no-mixed-spaces-and-tabs,new-cap,max-len
 			await admin.save();
+			// eslint-disable-next-line new-cap,max-len
+			await new collegeAdmin(newAdmin).save();
 		} catch (e) {
-			return new Error(e.message);
+			throw new Error(e.message);
 		}
 	}
 };
@@ -59,35 +80,39 @@ exports.setPassword = async (req, res) => {
 /**
  * @param {Object, Object} req, res
  * @param res
+ * @param collegeDB
  * @param {String} req.body.email
  * @param {String} req.body.password
  * @description check the password is correct then create a new session
  * @return admin data || Error
  * */
-exports.login = async (req, res) => {
-	const collegeName = req.body.collegeName;
+exports.login = async (req, res, collegeDB) => {
 	const email = req.body.email;
 	const pwd = req.body.password;
 	const role = req.body.role;
+	console.log(pwd);
 	let user;
+	let MODEL;
 	// let department;
-	try {
-		if (!role) {
-			return new Error("Role is required!");
-		} else {
-			if (role === "College-Admin") {
-				user = await AdminModel.findByCredentials(email, pwd);
+
+	if (!role) {
+		throw new Error("Role is required!");
+		// res.send("role is undefined");
+	} else {
+		try {
+			if (role === "college_admin") {
+				MODEL = await college.getCollegeAdminModel(collegeDB);
+				user = await MODEL.findByCredentials(email, pwd);
 				await Utils.sessions(req, user, "College-Admin");
-				res.redirect(`/${collegeName}/admin/dashboard`);
 			} else if (role === "Department-Admin") {
 				// department = req.body.department;
 				//	TODO create department admin module
 			} else {
 				// TODO create Faculty module
 			}
+		} catch (e) {
+			throw new Error(e.message);
 		}
-	} catch (e) {
-		return new Error(e.message);
 	}
 };
 

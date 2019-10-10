@@ -4,7 +4,7 @@ const path = require("path");
 
 const Utils = require(path.join(__dirname, "../../../services/utils/index"));
 
-const collegeAdmin = new mongoose.Schema({
+const collegeAdminList = new mongoose.Schema({
 	name: {
 		type: String,
 		required: true,
@@ -85,7 +85,7 @@ const collegeAdmin = new mongoose.Schema({
  * @param {String} password for validation
  * @return {Promise<admin>} if successfully verify the password
  */
-collegeAdmin.statics.findByCredentials = async function(email, password) {
+collegeAdminList.statics.findByCredentials = async function(email, password) {
 	let admin;
 	const hashPsw = Utils.createHash(password);
 	try {
@@ -102,4 +102,4 @@ collegeAdmin.statics.findByCredentials = async function(email, password) {
 	}
 };
 
-module.exports = collegeAdmin;
+module.exports = collegeAdminList;
