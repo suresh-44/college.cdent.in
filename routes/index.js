@@ -3,17 +3,23 @@ const express = require("express");
 const router = express.Router();
 const upload = require("../utils/multer");
 
-// Todo change the collegeAdminList to proper name
+// Todo: change the collegeAdminList to proper name
 const collegeAdminList = require("../services/college-admin");
 const college = require("../database/models/college");
-/* GET home page. */
+
+/* GET / return login page. */
 router.get("/", function(req, res) {
-	res.render("login", {title: "Express", layout: false});
+	res.render("login", {title: "login | cDent", layout: false});
 });
 
+/**
+ * GET /register
+ * return register page
+ */
 router.get("/register", (req, res) => {
-	res.render("register", {title: "Register", key: process.env.RECAPCTHA_KEY});
+	res.render("register", {title: "Register | cDent", key: process.env.RECAPCTHA_KEY});
 });
+
 //  POST /register for register the college
 router.post("/register", upload.single("file"), async (req, res) => {
 	const rVal = {};
@@ -34,6 +40,7 @@ router.post("/register", upload.single("file"), async (req, res) => {
 	});
 });
 
+// GET url with unique string for activated/accepted college
 router.get("/account/create/:uniqueString", async (req, res) => {
 	try {
 		await collegeAdminList.checkExists(req);
@@ -47,6 +54,7 @@ router.get("/account/create/:uniqueString", async (req, res) => {
 	}
 });
 
+// POST /account/create/uniqueString register with password and return login page
 router.post("/account/create/:uniqueString", async (req, res) => {
 	try {
 		await collegeAdminList.setPassword(req, res);
@@ -63,7 +71,7 @@ router.post("/account/create/:uniqueString", async (req, res) => {
 router.get("/:college_name", async (req, res)=> {
 	const collegeName = req.params.college_name;
 	try {
-		await college.getcollege(collegeName);
+		await college.getcollegeDB(collegeName);
 		res.render("login", {college: collegeName, layout: false});
 	} catch (e) {
 		res.render("404", {message: e.message});
@@ -74,7 +82,7 @@ router.post("/:college_name", async (req, res) => {
 	const collegeName = req.params.college_name;
 
 	try {
-		const collegeDB = await college.getcollege(collegeName);
+		const collegeDB = await college.getcollegeDB(collegeName);
 		await collegeAdminList.login(req, res, collegeDB);
 		res.send({msg: "Your an admin"});
 	} catch (e) {

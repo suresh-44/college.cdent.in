@@ -104,6 +104,9 @@ exports.login = async (req, res, collegeDB) => {
 		if (exist) {
 			user = await MODEL.findByCredentials(email, pwd);
 			await Utils.sessions(req, user);
+			console.log(user);
+		} else {
+			throw new Error("email address is incorrect")
 		}
 	} catch (e) {
 		throw new Error(e.message);
