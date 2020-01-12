@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-// eslint-disable-next-line no-unused-vars
+
 // database models
 const collegeAdminList = require("./adminList-model");
-const collegeAdminSchema = require("./schemas/college-admin");
+const collegeAdminSchema = require("./schemas/college-schema");
 
 module.exports.getcollegeDB = async (DB_NAME) => {
 	// console.log(DB_NAME);
@@ -13,6 +13,11 @@ module.exports.getcollegeDB = async (DB_NAME) => {
 
 module.exports.getCollegeAdminModel = async (DB_NAME) => {
 	return DB_NAME.model("collegeAdmin", collegeAdminSchema, "collegeAdmin");
+};
+
+// create the database when admin created is password
+module.exports.createCollegeDB = async (DB_NAME) => {
+	return mongoose.connection.useDb(DB_NAME);
 };
 
 // Todo create the others schema

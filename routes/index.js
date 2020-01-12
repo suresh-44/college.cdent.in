@@ -4,7 +4,7 @@ const router = express.Router();
 const upload = require("../utils/multer");
 
 // Todo: change the collegeAdminList to proper name
-const collegeAdminList = require("../services/college-admin");
+const collegeAdminList = require("../services/college");
 const college = require("../database/models/college");
 
 /* GET / return login page. */
