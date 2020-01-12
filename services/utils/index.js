@@ -27,9 +27,8 @@ exports.reCaptcha = async (req) => {
 	return axios.get(verificationURL);
 };
 
-exports.sessions = async (req, options) => {
-	const user = options.user;
-	const role = options.role;
+exports.sessions = async (req, user) => {
+	const role = user.role;
 
 	const browser = req.headers["user-agent"];
 	const userIP =
