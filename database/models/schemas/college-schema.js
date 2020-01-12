@@ -78,16 +78,16 @@ const collegeAdminSchema = new mongoose.Schema({
 	},
 });
 
-collegeAdminSchema.statics.findByCredentials = async function(email, password) {
+collegeAdminSchema.statics.authenticate = async function(email, password) {
 	const hashPsw = Utils.createHash(password);
 
-	const admin = await this.findOne({email});
+	const user = await this.findOne({email});
 
-	if (!admin) {
+	if (!user) {
 		throw new Error("Email is incorrect");
 	} else {
-		if (admin.password === hashPsw) {
-			return admin;
+		if (user.password === hashPsw) {
+			return user._id;
 		} else {
 			throw new Error("Password is incorrect");
 		}
