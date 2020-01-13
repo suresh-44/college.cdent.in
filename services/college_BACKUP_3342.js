@@ -1,5 +1,4 @@
-const crypto = require("crypto");
-
+/* eslint-disable new-cap */
 // Database modles
 const TempModel = require("../database/models/temp-model");
 const AdminModelList = require("../database/models/adminList-model");
@@ -98,16 +97,16 @@ exports.login = async (req, res, collegeDB) => {
 	const Model = await getModel(email, collegeDB);
 
 	// this function will check the password is correct and return user object
-	const user= await Model.authenticate(email, pwd);
+	const Id = await Model.authenticate(email, pwd);
 	const browser = req.headers["user-agent"];
 	const userIP =
       req.header("x-forwarded-for") ||
-      req.connection.remoteAddress + user.password;
+      req.connection.remoteAddress + inputPwdHash;
 	const str = browser + userIP;
 	const secret = crypto.createHash("sha512").update(str, "utf8");
 	req.session.login = true;
 	req.session.superAdmin = false;
-	req.session.userId = user._id;
+	req.session.userId = Id;
 	req.session.secret = secret.digest("hex");
 	res.redirect(`/${collegeName}/dashboard`);
 };
@@ -143,22 +142,22 @@ exports.register = async (req, res) => {
 };
 
 const getModel = async (email, DB_NAME) => {
-	const Model = await college.getCollegeAdminModel(DB_NAME);
-	const exist = await Model.exists({email});
+	let Model = college.getCollegeAdminModel(DB_NAME);
+	let exist = await Model.exists({email});
 	if (exist) return Model;
-	// else {
-	// 	Model = await college.getDeptAdminModel(DB_NAME);
-	// 	exist = await Model.exist({email});
-
-	// 	if (exist) return Model;
-	// 	else {
-	// 		Model = await college.getFacultyModel(DB_NAME);
-	// 		exist = await Model.exist({email});
-
-	// 		if (exist) return Model;
 	else {
-		throw new Error("Email is not Valid");
+		Model = college.getDeptAdminModel(DB_NAME);
+		exist = await Model.exist({email});
+
+		if (exist) return Model;
+		else {
+			Model = college.getFacultyModel(DB_NAME);
+			exist = await Model.exist({email});
+
+			if (exist) return Model;
+			else {
+				throw new Error("Email is not Valid");
+			}
+		}
 	}
-	// 	}
-	// }
 };

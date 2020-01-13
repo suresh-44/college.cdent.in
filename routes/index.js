@@ -43,12 +43,16 @@ router.post("/register", upload.single("file"), async (req, res) => {
 // GET url with unique string for activated/accepted college
 router.get("/account/create/:uniqueString", async (req, res) => {
 	try {
-		await collegeAdminList.checkExists(req);
-		res.render("create_password", {
-			title: "Create Password",
-			key: process.env.RECAPCTHA_KEY,
-			uniqueString: req.params.uniqueString,
-		});
+		if (req.params.uniqueString) {
+			await collegeAdminList.checkExists(req);
+			res.render("create_password", {
+				title: "Create Password",
+				key: process.env.RECAPCTHA_KEY,
+				uniqueString: req.params.uniqueString,
+			});
+		} else {
+			throw new Error("Invalid access");
+		}
 	} catch (e) {
 		res.render("404.hbs", {message: e.message});
 	}
