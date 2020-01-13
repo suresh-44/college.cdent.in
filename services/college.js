@@ -156,9 +156,9 @@ const getModel = async (email, DB_NAME) => {
 	// 		exist = await Model.exist({email});
 
 	// 		if (exist) return Model;
-			else {
-				throw new Error("Email is not Valid");
-			}
+	else {
+		throw new Error("Email is not Valid");
+	}
 	// 	}
 	// }
 };

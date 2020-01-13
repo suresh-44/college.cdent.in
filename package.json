@@ -2,6 +2,10 @@
   "name": "college.cdent.in",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": "12.x"
+  },
+
   "scripts": {
     "start": "node ./bin/www",
     "csslint": "csslint public/css/**",
@@ -19,7 +23,7 @@
     "debug": "~4.1.1",
     "dotenv": "^8.0.0",
     "express": "~4.16.0",
-    "express-fileupload": "^1.1.5",
+    "express-fileupload": "^1.1.6",
     "express-minify": "^1.0.0",
     "express-session": "^1.16.2",
     "hbs": "^4.0.4",
