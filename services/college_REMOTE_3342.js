@@ -1,5 +1,4 @@
-const crypto = require("crypto");
-
+/* eslint-disable new-cap */
 // Database modles
 const TempModel = require("../database/models/temp-model");
 const AdminModelList = require("../database/models/adminList-model");
@@ -68,11 +67,10 @@ exports.setPassword = async (req, res) => {
 			// eslint-disable-next-line no-mixed-spaces-and-tabs,new-cap,max-len
 			await admin.save();
 			// eslint-disable-next-line new-cap,max-len
-			// creating the new database with db name = shortName
-			const collegeDB = await college.createCollegeDB(shortName);
+
+			const collegeDB = await college.getcollege(shortName);
 			const collegeAdmin = await college.getCollegeAdminModel(collegeDB);
 
-			// saving the collegeAdmin info
 			await new collegeAdmin(newAdmin).save();
 		} catch (e) {
 			throw new Error(e.message);
@@ -93,23 +91,26 @@ exports.setPassword = async (req, res) => {
 exports.login = async (req, res, collegeDB) => {
 	const email = req.body.email;
 	const pwd = req.body.password;
-	const collegeName = req.params.college_name;
-	// getModel() will return the model depending on the email;
-	const Model = await getModel(email, collegeDB);
 
-	// this function will check the password is correct and return user object
-	const user= await Model.authenticate(email, pwd);
-	const browser = req.headers["user-agent"];
-	const userIP =
-      req.header("x-forwarded-for") ||
-      req.connection.remoteAddress + user.password;
-	const str = browser + userIP;
-	const secret = crypto.createHash("sha512").update(str, "utf8");
-	req.session.login = true;
-	req.session.superAdmin = false;
-	req.session.userId = user._id;
-	req.session.secret = secret.digest("hex");
-	res.redirect(`/${collegeName}/dashboard`);
+	// console.log(pwd);
+	let user;
+	let MODEL;
+	let exist;
+	// let department;
+
+	try {
+		MODEL = await college.getCollegeAdminModel(collegeDB);
+		exist = await MODEL.exists({email});
+		if (exist) {
+			user = await MODEL.findByCredentials(email, pwd);
+			await Utils.sessions(req, user);
+			console.log(user);
+		} else {
+			throw new Error("email address is incorrect");
+		}
+	} catch (e) {
+		throw new Error(e.message);
+	}
 };
 
 exports.register = async (req, res) => {
@@ -140,25 +141,4 @@ exports.register = async (req, res) => {
 			return tempModel.save();
 		}
 	}
-};
-
-const getModel = async (email, DB_NAME) => {
-	const Model = await college.getCollegeAdminModel(DB_NAME);
-	const exist = await Model.exists({email});
-	if (exist) return Model;
-	// else {
-	// 	Model = await college.getDeptAdminModel(DB_NAME);
-	// 	exist = await Model.exist({email});
-
-	// 	if (exist) return Model;
-	// 	else {
-	// 		Model = await college.getFacultyModel(DB_NAME);
-	// 		exist = await Model.exist({email});
-
-	// 		if (exist) return Model;
-	else {
-		throw new Error("Email is not Valid");
-	}
-	// 	}
-	// }
 };

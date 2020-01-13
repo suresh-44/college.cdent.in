@@ -2,6 +2,10 @@
   "name": "college.cdent.in",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": "12.x"
+  },
+
   "scripts": {
     "start": "node ./bin/www",
     "csslint": "csslint public/css/**",
