@@ -106,7 +106,7 @@ exports.login = async (req, res, collegeDB) => {
 			await Utils.sessions(req, user);
 			console.log(user);
 		} else {
-			throw new Error("email address is incorrect")
+			throw new Error("email address is incorrect");
 		}
 	} catch (e) {
 		throw new Error(e.message);

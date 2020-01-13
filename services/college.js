@@ -143,8 +143,8 @@ exports.register = async (req, res) => {
 };
 
 const getModel = async (email, DB_NAME) => {
-	let Model = await college.getCollegeAdminModel(DB_NAME);
-	let exist = await Model.exists({email});
+	const Model = await college.getCollegeAdminModel(DB_NAME);
+	const exist = await Model.exists({email});
 	if (exist) return Model;
 	// else {
 	// 	Model = await college.getDeptAdminModel(DB_NAME);
