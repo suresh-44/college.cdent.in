@@ -145,19 +145,19 @@ const getModel = async (email, DB_NAME) => {
 	let Model = college.getCollegeAdminModel(DB_NAME);
 	let exist = await Model.exists({email});
 	if (exist) return Model;
-	else {
-		Model = college.getDeptAdminModel(DB_NAME);
-		exist = await Model.exist({email});
+	// else {
+	// 	Model = college.getDeptAdminModel(DB_NAME);
+	// 	exist = await Model.exist({email});
 
-		if (exist) return Model;
-		else {
-			Model = college.getFacultyModel(DB_NAME);
-			exist = await Model.exist({email});
+	// 	if (exist) return Model;
+	// 	else {
+	// 		Model = college.getFacultyModel(DB_NAME);
+	// 		exist = await Model.exist({email});
 
-			if (exist) return Model;
+	// 		if (exist) return Model;
 			else {
 				throw new Error("Email is not Valid");
 			}
-		}
-	}
+	// 	}
+	// }
 };
