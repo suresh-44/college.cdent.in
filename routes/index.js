@@ -121,7 +121,7 @@ router.post("/:college_name", async (req, res) => {
 });
 
 router.get("/:college_name/dashboard", loginMiddleware, (req, res) => {
-	res.send({msg: "logged_in"});
+	res.render("dashboard");
 });
 
 module.exports = router;
