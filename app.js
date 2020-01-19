@@ -7,6 +7,7 @@ const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const logger = require("morgan");
 const hbs = require("hbs");
+const loginMiddleware = require("./middlewares/login-middleware");
 
 require("dotenv").config();
 
@@ -33,10 +34,11 @@ app.use(cookieParser());
 // session setup
 const sessionOptions = {
 	store: new FileStore({}),
-	secret: "dfsdfsd", // process.env.SESSION_SECRET,
-	resave: true,
+	secret: process.env.SESSION_SECRET || "Aie8whuhHHk8wh",
+	resave: false,
 	saveUninitialized: false,
 	cookie: {secure: false},
+	name: "user__",
 };
 
 
@@ -48,6 +50,8 @@ if (process.env.NODE_ENV === "production") {
 app.use(session(sessionOptions));
 
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use(loginMiddleware);
 
 app.use("/", indexRouter);
 app.use("/super/admin", superAdminRouter);
