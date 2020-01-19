@@ -14,6 +14,7 @@ const isAccessIsAllowed = (allowedAccessLevel, currentURLLevel) => {
 
 module.exports = async (req, res, next) => {
 	const url = req.url;
+	console.log("Called login middleware");
 	for (const str of protectedURLs) {
 		if (str === url || str.match(str)) {
 			const loginData = await loginHelper.checkLogin(req);
@@ -26,4 +27,5 @@ module.exports = async (req, res, next) => {
 			}
 		}
 	}
+	next();
 };
