@@ -31,7 +31,6 @@ exports.reCaptcha = async (req) => {
 		form: postData,
 		json: true,
 	};
-	console.log(options);
 
 	try {
 		const response = await rp(options);

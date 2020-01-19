@@ -62,7 +62,7 @@ router.get("/account/create/:uniqueString", async (req, res) => {
 			await collegeAdminList.checkExists(req);
 			res.render("create_password", {
 				title: "Create Password",
-				key: process.env.RECAPCTHA_KEY,
+				key: process.env.RECAPTCHA_KEY,
 				uniqueString: req.params.uniqueString,
 			});
 		} else {
@@ -79,10 +79,12 @@ router.post("/account/create/:uniqueString", async (req, res) => {
 		await collegeAdminList.setPassword(req, res);
 		res.render("login", {message: "successfully created the password"});
 	} catch (e) {
-		res.render("create_password", {error: e.message,
+		res.render("create_password", {
+			error: e.message,
 			title: "Create Password",
-			key: process.env.RECAPCTHA_KEY,
-			uniqueString: req.params.uniqueString});
+			key: process.env.RECAPTCHA_KEY,
+			uniqueString: req.params.uniqueString,
+		});
 	}
 });
 

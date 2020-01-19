@@ -30,10 +30,10 @@ exports.setPassword = async (req, res) => {
 
 	// recaptcha to prevent bots.
 	const response = await Utils.reCaptcha(req);
-
+	console.log(response);
 	// // Checking the response
-	if (!response.data.success) {
-		throw new Error(response.data["error-codes"]);
+	if (response !== true) {
+		throw new Error(response);
 	} else {
 		if (pwd !== rpwd) {
 			throw new Error("Passwords doesn't match");
@@ -75,7 +75,7 @@ exports.setPassword = async (req, res) => {
 			// saving the collegeAdmin info
 			await new collegeAdmin(newAdmin).save();
 		} catch (e) {
-			throw new Error(e.message);
+			throw new Error(e);
 		}
 	}
 };
