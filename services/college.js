@@ -1,6 +1,6 @@
 const crypto = require("crypto");
 
-// Database modles
+// Database models
 const TempModel = require("../database/models/temp-model");
 const AdminModelList = require("../database/models/adminList-model");
 const college= require("../database/models/college");
@@ -117,8 +117,8 @@ exports.register = async (req, res) => {
 
 	const response = await Utils.reCaptcha(req, res);
 	// console.log(response);
-	if (!response.data.success) {
-		throw new Error(response.data["error-codes"]);
+	if (response !== true) {
+		throw new Error(response);
 	} else {
 		const temp = await TempModel.find({
 			email: req.body.email,

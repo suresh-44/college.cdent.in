@@ -1,4 +1,4 @@
-const axios = require("axios");
+const rp = require("request-promise");
 const crypto = require("crypto");
 
 const transporter = require("./mail-config");
@@ -19,12 +19,29 @@ exports.mailer = {
 // Google reCaptcha
 exports.reCaptcha = async (req) => {
 	const recaptcha = req.body["g-recaptcha-response"];
-	const userIP =
-		req.headers["x-forwarded-for"] || req.connection.remoteAddress;
 
-	const verificationURL = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPCTHA_SECRET}&response=${recaptcha}&remoteip=${userIP}`;
+	const verificationURL = "https://www.google.com/recaptcha/api/siteverify";
+	const postData = {
+		secret: process.env.RECAPTCHA_SECRET,
+		response: recaptcha,
+	};
+	const options = {
+		method: "POST",
+		uri: verificationURL,
+		form: postData,
+		json: true,
+	};
+	console.log(options);
 
-	return axios.get(verificationURL);
+	try {
+		const response = await rp(options);
+		if (response.success !== true) {
+			return response["error-codes"];
+		}
+		return true;
+	} catch (e) {
+		return new Error(e);
+	}
 };
 
 exports.sessions = async (req, user) => {

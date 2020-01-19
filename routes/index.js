@@ -7,8 +7,20 @@ const upload = require("../utils/multer");
 const collegeAdminList = require("../services/college");
 const college = require("../database/models/college");
 
-/* GET / return login page. */
+/**
+ *  GET /
+ *  return login page.
+ **/
 router.get("/", function(req, res) {
+	res.render("login", {title: "login | cDent", layout: false});
+});
+
+/**
+ * GET /login
+ * return login page
+ **/
+
+router.get("/login", function(req, res) {
 	res.render("login", {title: "login | cDent", layout: false});
 });
 
@@ -17,7 +29,10 @@ router.get("/", function(req, res) {
  * return register page
  */
 router.get("/register", (req, res) => {
-	res.render("register", {title: "Register | cDent", key: process.env.RECAPCTHA_KEY});
+	res.render("register", {
+		title: "Register | cDent",
+		key: process.env.RECAPTCHA_KEY,
+	});
 });
 
 //  POST /register for register the college
