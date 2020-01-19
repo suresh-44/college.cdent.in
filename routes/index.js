@@ -51,7 +51,7 @@ router.post("/register", upload.single("file"), async (req, res) => {
 	res.render("register", {
 		response: rVal,
 		title: "Register",
-		key: process.env.RECAPCTHA_KEY,
+		key: process.env.RECAPTCHA_KEY,
 	});
 });
 
