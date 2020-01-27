@@ -87,7 +87,7 @@ collegeAdminSchema.statics.authenticate = async function(email, password) {
 		throw new Error("Email is incorrect");
 	} else {
 		if (user.password === hashPsw) {
-			return user._id;
+			return user;
 		} else {
 			throw new Error("Password is incorrect");
 		}
