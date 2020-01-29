@@ -84,7 +84,6 @@ exports.setPassword = async (req, res) => {
 
 // eslint-disable-next-line valid-jsdoc
 /**
- * @paramreq
  * @param req
  * @param res
  * @param collegeDB
