@@ -2,12 +2,12 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 
 const facultySchema = new mongoose.Schema({
-	first_Name: {
+	firstName: {
 		type: String,
 		required: true,
 		trim: true,
 	},
-	last_Name: {
+	lastName: {
 		type: String,
 		required: true,
 		trim: true,
@@ -27,7 +27,7 @@ const facultySchema = new mongoose.Schema({
 		required: true,
 		unique: true,
 	},
-	phone_no: {
+	phoneNo: {
 		type: Number,
 		required: true,
 		trim: true,
